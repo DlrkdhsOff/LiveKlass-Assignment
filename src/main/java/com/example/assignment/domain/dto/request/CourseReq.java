@@ -22,6 +22,9 @@ public class CourseReq {
   @NotBlank(message = "설명을 입력해주세요")
   private String description;
 
+  @NotNull(message = "강의 가격을 입력해주세요.")
+  private Long amount;
+
   @NotNull(message = "최대 수강 인원을 입력해주세요.")
   @Min(value = 5, message = "최대 수강 인원은 5명 이상이어야 합니다.")
   private Long personnel;
