@@ -12,7 +12,9 @@ public enum SuccessType {
   SUCCESS_INQUIRY_COURSES_DETAIL(HttpStatus.OK, "강의 상세 정보를 성공적으로 조회하였습니다."),
   SUCCESS_ENROLLMENT(HttpStatus.OK, "수강신청이 성공적으로 완료되었습니다."),
   SUCCESS_PAYMENT(HttpStatus.OK, "결제가 성공적으로 완료되었습니다."),
-  SUCCESS_INQUIRY_ENROLLMENTS(HttpStatus.OK, "내 수강 신청 목록을 성공적으로 조회하였습니다.");
+  SUCCESS_INQUIRY_ENROLLMENTS(HttpStatus.OK, "내 수강 신청 목록을 성공적으로 조회하였습니다."),
+  SUCCESS_CANCEL_ENROLLMENT(HttpStatus.OK, "신청한 수강을 성공적으로 취소하였습니다."),
+  ;
 
   private final HttpStatus status;
   private final String message;

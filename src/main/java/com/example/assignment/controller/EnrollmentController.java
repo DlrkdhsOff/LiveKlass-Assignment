@@ -4,6 +4,7 @@ import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,13 @@ public class EnrollmentController {
   public ResponseEntity<ResultResponse> getEnroll(@PathVariable Long userId, @RequestParam(defaultValue = "1") int page ) {
 
     ResultResponse response = enrollmentService.getEnroll(userId, page);
+    return new ResponseEntity<>(response, response.getStatus());
+  }
+
+  @DeleteMapping("/{userId}/{enrollmentId}")
+  public ResponseEntity<ResultResponse> cancelled(@PathVariable Long userId, @PathVariable Long enrollmentId) {
+
+    ResultResponse response = enrollmentService.cancelEnroll(userId, enrollmentId);
     return new ResponseEntity<>(response, response.getStatus());
   }
 }

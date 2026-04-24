@@ -81,4 +81,15 @@ public class Course extends BaseEntity {
         || courseStatus == CourseStatus.CLOSED;
   }
 
+  public void decreaseEnrollmentCnt() {
+    if (this.enrollmentCnt > 0) {
+      this.enrollmentCnt--;
+    }
+
+    // CLOSED 상태였는데 자리가 나면 자동으로 OPEN 복귀
+    if (this.courseStatus == CourseStatus.CLOSED && !this.isFull()) {
+      this.courseStatus = CourseStatus.OPEN;
+    }
+  }
+
 }

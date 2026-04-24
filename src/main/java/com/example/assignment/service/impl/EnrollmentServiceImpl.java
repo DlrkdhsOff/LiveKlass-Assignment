@@ -70,7 +70,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
         .orElseThrow(() -> new GlobalException(FailedType.ENROLLMENT_NOT_FOUND));
 
-    if (!enrollment.getUser().getUserId().equals(userId)) {
+    if (enrollment.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
@@ -101,5 +101,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_ENROLLMENTS, enrollPageRes);
 
+  }
+
+  @Override
+  @Transactional
+  public ResultResponse cancelEnroll(Long userId, Long enrollmentId) {
+
+    Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+        .orElseThrow(() -> new GlobalException(FailedType.ENROLLMENT_NOT_FOUND));
+
+    if (enrollment.isNotOwnedBy(userId)) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    if (enrollment.isCancelled()) {
+      throw new GlobalException(FailedType.ALREADY_CANCELLED);
+    }
+
+    Course course = courseRepository.findByIdWithLock(enrollment.getCourse().getCourseId())
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+
+    course.decreaseEnrollmentCnt();
+    enrollment.cancel();
+
+    return ResultResponse.of(SuccessType.SUCCESS_CANCEL_ENROLLMENT);
   }
 }

@@ -45,6 +45,10 @@ public class Enrollment extends BaseEntity {
         .build();
   }
 
+  public boolean isNotOwnedBy(Long userId) {
+    return !this.user.getUserId().equals(userId);
+  }
+
   public boolean isConfirmed() {
     return enrollmentStatus == EnrollmentStatus.CONFIRMED;
   }
@@ -55,5 +59,9 @@ public class Enrollment extends BaseEntity {
 
   public void confirm() {
     this.enrollmentStatus = EnrollmentStatus.CONFIRMED;
+  }
+
+  public void cancel() {
+    this.enrollmentStatus = EnrollmentStatus.CANCELLED;
   }
 }

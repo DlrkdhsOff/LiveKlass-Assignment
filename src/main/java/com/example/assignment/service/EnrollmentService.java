@@ -9,4 +9,6 @@ public interface EnrollmentService {
   ResultResponse payEnroll(Long userId, Long enrollmentId);
 
   ResultResponse getEnroll(Long userId, int page);
+
+  ResultResponse cancelEnroll(Long userId, Long enrollmentId);
 }
