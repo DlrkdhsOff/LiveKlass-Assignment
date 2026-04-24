@@ -32,6 +32,8 @@ public class Course extends BaseEntity {
 
   private String description;
 
+  private Long amount;
+
   private Long personnel;
 
   private LocalDate startPeriodAt;
@@ -49,6 +51,7 @@ public class Course extends BaseEntity {
     return Course.builder()
         .title(courseReq.getTitle())
         .description(courseReq.getDescription())
+        .amount(courseReq.getAmount())
         .personnel(courseReq.getPersonnel())
         .startPeriodAt(courseReq.getStartPeriodAt())
         .endPeriodAt(courseReq.getEndPeriodAt())
