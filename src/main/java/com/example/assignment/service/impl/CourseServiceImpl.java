@@ -36,6 +36,7 @@ public class CourseServiceImpl implements CourseService {
         user,
         courseReq.getTitle(),
         courseReq.getDescription(),
+        courseReq.getAmount(),
         courseReq.getPersonnel(),
         courseReq.getStartPeriodAt(),
         courseReq.getEndPeriodAt(),
