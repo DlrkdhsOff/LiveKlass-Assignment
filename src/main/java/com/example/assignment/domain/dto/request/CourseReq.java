@@ -2,7 +2,6 @@ package com.example.assignment.domain.dto.request;
 
 import com.example.assignment.domain.type.CourseStatus;
 import jakarta.validation.constraints.AssertTrue;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

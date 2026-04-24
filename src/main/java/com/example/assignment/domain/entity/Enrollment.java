@@ -37,4 +37,23 @@ public class Enrollment extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private EnrollmentStatus enrollmentStatus;
 
+  public static Enrollment toEntity(Course course, User user) {
+    return Enrollment.builder()
+        .course(course)
+        .user(user)
+        .enrollmentStatus(EnrollmentStatus.PENDING)
+        .build();
+  }
+
+  public boolean isConfirmed() {
+    return enrollmentStatus == EnrollmentStatus.CONFIRMED;
+  }
+
+  public boolean isCancelled() {
+    return enrollmentStatus == EnrollmentStatus.CANCELLED;
+  }
+
+  public void confirm() {
+    this.enrollmentStatus = EnrollmentStatus.CONFIRMED;
+  }
 }

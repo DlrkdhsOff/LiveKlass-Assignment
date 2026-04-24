@@ -63,4 +63,22 @@ public class Course extends BaseEntity {
         .build();
   }
 
+  public boolean isFull() {
+    return enrollmentCnt >= personnel;
+  }
+
+  public void increaseEnrollmentCnt() {
+    this.enrollmentCnt++;
+
+    // 정원이 꽉 찼으면 자동으로 CLOSED 로 변경
+    if (this.isFull()) {
+      this.courseStatus = CourseStatus.CLOSED;
+    }
+  }
+
+  public boolean isNotAvailable() {
+    return courseStatus == CourseStatus.DRAFT
+        || courseStatus == CourseStatus.CLOSED;
+  }
+
 }
