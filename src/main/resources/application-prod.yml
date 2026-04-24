@@ -1,0 +1,29 @@
+spring:
+  config:
+    import: classpath:secret.yml
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${PROD.DATABASE.URL}
+    username: ${PROD.DATABASE.USERNAME}
+    password: ${PROD.DATABASE.PASSWORD}
+
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    open-in-view: false
+
+
+  jackson:
+    time-zone: Asia/Seoul
+
+
+logging:
+  level:
+    com.example.notification: DEBUG

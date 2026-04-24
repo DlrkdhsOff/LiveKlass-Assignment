@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    active:
+      - ${ACTIVE_PROFILE:dev}
