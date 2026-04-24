@@ -83,6 +83,6 @@ public class CourseServiceImpl implements CourseService {
         .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
 
     CourseRes courseRes = CourseRes.toCourseRes(course);
-    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES, courseRes);
+    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, courseRes);
   }
 }
