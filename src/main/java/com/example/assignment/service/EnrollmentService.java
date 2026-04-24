@@ -7,4 +7,6 @@ public interface EnrollmentService {
   ResultResponse enroll(Long userId, Long courseId);
 
   ResultResponse payEnroll(Long userId, Long enrollmentId);
+
+  ResultResponse getEnroll(Long userId, int page);
 }
