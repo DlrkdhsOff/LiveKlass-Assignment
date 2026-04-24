@@ -27,4 +27,12 @@ public class User {
 
   @Enumerated(EnumType.STRING)
   private UserRole userRole;
+
+  public boolean isStudent() {
+    return userRole == UserRole.STUDENT;
+  }
+
+  public boolean isCreator() {
+    return userRole == UserRole.CREATORS;
+  }
 }
