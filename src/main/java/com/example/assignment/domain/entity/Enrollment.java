@@ -27,12 +27,12 @@ public class Enrollment extends BaseEntity {
   private Long enrollmentId;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "course_id")
-  private Course courseId;
+  @JoinColumn(name = "course_id", nullable = false)
+  private Course course;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_Id")
-  private User userId;
+  @JoinColumn(name = "user_Id", nullable = false)
+  private User user;
 
   @Enumerated(EnumType.STRING)
   private EnrollmentStatus enrollmentStatus;
