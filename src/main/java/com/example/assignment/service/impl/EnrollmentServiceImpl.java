@@ -1,6 +1,8 @@
 package com.example.assignment.service.impl;
 
+import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.dto.ResultResponse;
+import com.example.assignment.domain.dto.response.EnrollmentPageRes;
 import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.entity.User;
@@ -12,6 +14,7 @@ import com.example.assignment.domain.type.FailedType;
 import com.example.assignment.domain.type.SuccessType;
 import com.example.assignment.exception.GlobalException;
 import com.example.assignment.service.EnrollmentService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,5 +85,21 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     enrollment.confirm();
 
     return ResultResponse.of(SuccessType.SUCCESS_PAYMENT);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ResultResponse getEnroll(Long userId, int page) {
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+
+    List<Enrollment> enrollments = enrollmentRepository.findAllByUserWithCourse(user);
+    List<EnrollmentPageRes> enrollmentPageRes = EnrollmentPageRes.toEnrollmentPageList(enrollments);
+
+    PageResponse<EnrollmentPageRes> enrollPageRes = PageResponse.pagination(enrollmentPageRes, page);
+
+    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_ENROLLMENTS, enrollPageRes);
+
   }
 }
