@@ -18,6 +18,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       WHERE c.user = :user
         AND c.title = :title
         AND c.description = :description
+        AND c.amount = :amount
         AND c.personnel = :personnel
         AND c.startPeriodAt = :startPeriodAt
         AND c.endPeriodAt = :endPeriodAt
@@ -27,6 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       @Param("user") User user,
       @Param("title") String title,
       @Param("description") String description,
+      @Param("amount") Long amount,
       @Param("personnel") Long personnel,
       @Param("startPeriodAt") LocalDate startPeriodAt,
       @Param("endPeriodAt") LocalDate endPeriodAt,
