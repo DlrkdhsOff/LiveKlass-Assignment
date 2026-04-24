@@ -13,7 +13,6 @@ import com.example.assignment.domain.repository.querydsl.CourseQueryRepository;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.domain.type.FailedType;
 import com.example.assignment.domain.type.SuccessType;
-import com.example.assignment.domain.type.UserRole;
 import com.example.assignment.exception.GlobalException;
 import com.example.assignment.service.CourseService;
 import java.time.LocalDate;
@@ -37,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
         .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
 
     // security 설정 없어서 임시로 설정
-    if(user.getUserRole().equals(UserRole.STUDENT)) {
+    if (user.isStudent()) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
