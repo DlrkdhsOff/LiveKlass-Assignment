@@ -47,6 +47,8 @@ public class Course extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private CourseStatus courseStatus;
 
+  private Long enrollmentCnt;
+
   public static Course toEntity(CourseReq courseReq, User user) {
     return Course.builder()
         .title(courseReq.getTitle())
@@ -57,6 +59,7 @@ public class Course extends BaseEntity {
         .endPeriodAt(courseReq.getEndPeriodAt())
         .user(user)
         .courseStatus(courseReq.getCourseStatus())
+        .enrollmentCnt(0L)
         .build();
   }
 
