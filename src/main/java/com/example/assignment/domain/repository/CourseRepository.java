@@ -1,0 +1,35 @@
+package com.example.assignment.domain.repository;
+
+import com.example.assignment.domain.entity.Course;
+import com.example.assignment.domain.entity.User;
+import com.example.assignment.domain.type.CourseStatus;
+import java.time.LocalDate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CourseRepository extends JpaRepository<Course, Long> {
+
+  @Query("""
+      SELECT COUNT(c) > 0
+      FROM Course c
+      WHERE c.user = :user
+        AND c.title = :title
+        AND c.description = :description
+        AND c.personnel = :personnel
+        AND c.startPeriodAt = :startPeriodAt
+        AND c.endPeriodAt = :endPeriodAt
+        AND c.courseStatus = :courseStatus
+      """)
+  boolean existsDuplicateCourse(
+      @Param("user") User user,
+      @Param("title") String title,
+      @Param("description") String description,
+      @Param("personnel") Long personnel,
+      @Param("startPeriodAt") LocalDate startPeriodAt,
+      @Param("endPeriodAt") LocalDate endPeriodAt,
+      @Param("courseStatus") CourseStatus courseStatus
+  );
+}
