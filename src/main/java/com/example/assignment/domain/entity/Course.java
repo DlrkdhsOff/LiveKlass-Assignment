@@ -49,6 +49,8 @@ public class Course extends BaseEntity {
 
   private Long enrollmentCnt;
 
+  // =================== 정적 팩토리 메서드 ===================
+
   public static Course toEntity(CourseReq courseReq, User user) {
     return Course.builder()
         .title(courseReq.getTitle())
@@ -63,50 +65,57 @@ public class Course extends BaseEntity {
         .build();
   }
 
-  public boolean isFull() {
-    return enrollmentCnt >= personnel;
-  }
-
-  public void increaseEnrollmentCnt() {
-    this.enrollmentCnt++;
-
-    // 정원이 꽉 찼으면 자동으로 CLOSED 로 변경
-    if (this.isFull()) {
-      this.courseStatus = CourseStatus.CLOSED;
-    }
-  }
+  // =================== 상태 판별 ===================
 
   public boolean isNotAvailable() {
-    return courseStatus == CourseStatus.DRAFT
-        || courseStatus == CourseStatus.CLOSED;
+    return courseStatus == CourseStatus.DRAFT;
   }
 
-  public void decreaseEnrollmentCnt() {
-    if (this.enrollmentCnt > 0) {
-      this.enrollmentCnt--;
-    }
+  public boolean isOpen() {
+    return courseStatus == CourseStatus.OPEN;
+  }
 
-    // CLOSED 상태였는데 자리가 나면 자동으로 OPEN 복귀
-    if (this.courseStatus == CourseStatus.CLOSED && !this.isFull()) {
-      this.courseStatus = CourseStatus.OPEN;
-    }
+  public boolean isClosed() {
+    return courseStatus == CourseStatus.CLOSED;
   }
 
   public boolean isNotOwnedBy(Long userId) {
     return !this.user.getUserId().equals(userId);
   }
 
+  // =================== 기간 판별 ===================
+
+  public boolean isStarted() {
+    return this.startPeriodAt.isBefore(LocalDate.now());
+  }
+
   public boolean isExpired() {
     return this.endPeriodAt.isBefore(LocalDate.now());
   }
 
-  public boolean isOpen() {
-    return this.courseStatus == CourseStatus.OPEN;
+  // =================== 정원 관리 ===================
+
+  public boolean isFull() {
+    return enrollmentCnt >= personnel;
   }
 
-  public boolean isClosed() {
-    return this.courseStatus == CourseStatus.CLOSED;
+  public void increaseEnrollmentCnt() {
+    this.enrollmentCnt++;
+    if (this.isFull()) {
+      this.courseStatus = CourseStatus.CLOSED;
+    }
   }
+
+  public void decreaseEnrollmentCnt() {
+    if (this.enrollmentCnt > 0) {
+      this.enrollmentCnt--;
+    }
+    if (this.courseStatus == CourseStatus.CLOSED && !this.isFull()) {
+      this.courseStatus = CourseStatus.OPEN;
+    }
+  }
+
+  // =================== 상태 변경 ===================
 
   public void openCourse() {
     this.courseStatus = CourseStatus.OPEN;
@@ -115,5 +124,4 @@ public class Course extends BaseEntity {
   public void closeCourse() {
     this.courseStatus = CourseStatus.CLOSED;
   }
-
 }
