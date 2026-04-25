@@ -5,6 +5,7 @@ import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.type.EnrollmentStatus;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,4 +31,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     ORDER BY e.createdAt DESC
     """)
   List<Enrollment> findAllByCourseWithUser(@Param("course") Course course);
+
+  @Query("""
+    SELECT e FROM Enrollment e
+    WHERE e.course = :course
+      AND e.enrollmentStatus = 'WAITLISTED'
+    ORDER BY e.createdAt ASC
+    LIMIT 1
+    """)
+  Optional<Enrollment> findFirstWaitlistedByCourse(@Param("course") Course course);
 }

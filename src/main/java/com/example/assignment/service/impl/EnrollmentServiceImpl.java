@@ -27,6 +27,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   private final CourseRepository courseRepository;
   private final UserRepository userRepository;
 
+  // =================== 수강 신청 ===================
+
   @Override
   @Transactional
   public ResultResponse enroll(Long userId, Long courseId) {
@@ -45,23 +47,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       throw new GlobalException(FailedType.COURSE_NOT_AVAILABLE);
     }
 
-    if (course.isFull()) {
-      throw new GlobalException(FailedType.COURSE_IS_FULL);
+    if (enrollmentRepository.existsByCourseAndUserAndEnrollmentStatusNot(
+        course, user, EnrollmentStatus.CANCELLED)) {
+      throw new GlobalException(FailedType.ALREADY_ENROLLED);
     }
 
-    if (enrollmentRepository.existsByCourseAndUserAndEnrollmentStatusNot(course, user, EnrollmentStatus.CANCELLED)) {
+    if (course.isStarted()) {
+      throw new GlobalException(FailedType.COURSE_ALREADY_STARTED);
+    }
 
-      throw new GlobalException(FailedType.ALREADY_ENROLLED);
+    if (course.isFull()) {
+      Enrollment waitlist = Enrollment.toWaitlistEntity(course, user);
+      enrollmentRepository.save(waitlist);
+      return ResultResponse.of(SuccessType.SUCCESS_WAITLISTED);
     }
 
     Enrollment enrollment = Enrollment.toEntity(course, user);
     enrollmentRepository.save(enrollment);
-
     course.increaseEnrollmentCnt();
 
     return ResultResponse.of(SuccessType.SUCCESS_ENROLLMENT);
   }
 
+  // =================== 결제 ===================
 
   @Override
   @Transactional
@@ -87,6 +95,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     return ResultResponse.of(SuccessType.SUCCESS_PAYMENT);
   }
 
+  // =================== 조회 ===================
+
   @Override
   @Transactional(readOnly = true)
   public ResultResponse getEnroll(Long userId, int page) {
@@ -96,12 +106,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     List<Enrollment> enrollments = enrollmentRepository.findAllByUserWithCourse(user);
     List<EnrollmentPageRes> enrollmentPageRes = EnrollmentPageRes.toList(enrollments);
-
     PageResponse<EnrollmentPageRes> enrollPageRes = PageResponse.pagination(enrollmentPageRes, page);
 
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_ENROLLMENTS, enrollPageRes);
-
   }
+
+  // =================== 취소 ===================
 
   @Override
   @Transactional
@@ -118,8 +128,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       throw new GlobalException(FailedType.ALREADY_CANCELLED);
     }
 
-    if(!enrollment.isCancellable()) {
+    if (!enrollment.isCancellable()) {
       throw new GlobalException(FailedType.CANCEL_PERIOD_EXPIRED);
+    }
+
+    // 대기 중 취소는 정원 복구 불필요
+    if (enrollment.isWaitlisted()) {
+      enrollment.cancel();
+      return ResultResponse.of(SuccessType.SUCCESS_CANCEL_ENROLLMENT);
     }
 
     Course course = courseRepository.findByIdWithLock(enrollment.getCourse().getCourseId())
@@ -127,7 +143,18 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     course.decreaseEnrollmentCnt();
     enrollment.cancel();
+    promoteNextFromWaitlist(course);
 
     return ResultResponse.of(SuccessType.SUCCESS_CANCEL_ENROLLMENT);
+  }
+
+  // =================== 내부 메서드 ===================
+
+  private void promoteNextFromWaitlist(Course course) {
+    enrollmentRepository.findFirstWaitlistedByCourse(course)
+        .ifPresent(e -> {
+          e.promote();
+          course.increaseEnrollmentCnt();
+        });
   }
 }
