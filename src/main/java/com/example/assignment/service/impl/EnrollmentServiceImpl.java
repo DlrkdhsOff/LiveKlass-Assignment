@@ -95,7 +95,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
 
     List<Enrollment> enrollments = enrollmentRepository.findAllByUserWithCourse(user);
-    List<EnrollmentPageRes> enrollmentPageRes = EnrollmentPageRes.toEnrollmentPageList(enrollments);
+    List<EnrollmentPageRes> enrollmentPageRes = EnrollmentPageRes.toList(enrollments);
 
     PageResponse<EnrollmentPageRes> enrollPageRes = PageResponse.pagination(enrollmentPageRes, page);
 

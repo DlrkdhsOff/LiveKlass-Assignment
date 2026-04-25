@@ -17,4 +17,6 @@ public interface CourseService {
   ResultResponse getCourseDetail(Long courseId);
 
   ResultResponse updateCourseStatus(Long userId, Long courseId, CourseStatusReq courseStatusReq);
+
+  ResultResponse getCourseEnrollments(Long userId, Long courseId, int page);
 }

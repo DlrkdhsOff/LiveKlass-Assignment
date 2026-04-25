@@ -30,7 +30,7 @@ public class CourseRes {
 
   private String enrollmentRatio;
 
-  public static CourseRes toCourseRes(Course course) {
+  public static CourseRes of(Course course) {
     return new CourseRes(
         course.getCourseId(),
         course.getTitle(),

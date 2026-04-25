@@ -26,7 +26,7 @@ public class CoursePageRes {
 
   private LocalDate endPeriodAt;
 
-  public static List<CoursePageRes> toCourseResList(List<Course> list) {
+  public static List<CoursePageRes> toList(List<Course> list) {
     return list.stream()
         .map(course ->
             new CoursePageRes(

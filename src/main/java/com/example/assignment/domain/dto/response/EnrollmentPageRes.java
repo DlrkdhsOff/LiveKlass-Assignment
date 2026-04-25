@@ -32,7 +32,7 @@ public class EnrollmentPageRes {
 
   private String enrollmentStatus;
 
-  public static List<EnrollmentPageRes> toEnrollmentPageList(List<Enrollment> list) {
+  public static List<EnrollmentPageRes> toList(List<Enrollment> list) {
     return list.stream()
         .map(enrollment ->
             new EnrollmentPageRes(
