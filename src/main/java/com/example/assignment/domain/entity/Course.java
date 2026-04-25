@@ -2,8 +2,6 @@ package com.example.assignment.domain.entity;
 
 import com.example.assignment.domain.dto.request.CourseReq;
 import com.example.assignment.domain.type.CourseStatus;
-import com.example.assignment.domain.type.FailedType;
-import com.example.assignment.exception.GlobalException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
