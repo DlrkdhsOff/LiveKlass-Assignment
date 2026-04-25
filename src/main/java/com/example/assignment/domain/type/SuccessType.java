@@ -15,6 +15,7 @@ public enum SuccessType {
   SUCCESS_INQUIRY_ENROLLMENTS(HttpStatus.OK, "내 수강 신청 목록을 성공적으로 조회하였습니다."),
   SUCCESS_CANCEL_ENROLLMENT(HttpStatus.OK, "신청한 수강을 성공적으로 취소하였습니다."),
   SUCCESS_UPDATE_COURSE_STATUS(HttpStatus.OK, "강의 상태를 성공적으로 변경하였습니다."),
+  SUCCESS_INQUIRY_COURSE_ENROLLMENTS(HttpStatus.OK, "수강생 목록을 조회했습니다."),
   ;
 
   private final HttpStatus status;
