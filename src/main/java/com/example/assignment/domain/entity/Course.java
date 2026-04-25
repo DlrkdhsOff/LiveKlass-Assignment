@@ -92,4 +92,28 @@ public class Course extends BaseEntity {
     }
   }
 
+  public boolean isNotOwnedBy(Long userId) {
+    return !this.user.getUserId().equals(userId);
+  }
+
+  public boolean isExpired() {
+    return this.endPeriodAt.isBefore(LocalDate.now());
+  }
+
+  public boolean isOpen() {
+    return this.courseStatus == CourseStatus.OPEN;
+  }
+
+  public boolean isClosed() {
+    return this.courseStatus == CourseStatus.CLOSED;
+  }
+
+  public void openCourse() {
+    this.courseStatus = CourseStatus.OPEN;
+  }
+
+  public void closeCourse() {
+    this.courseStatus = CourseStatus.CLOSED;
+  }
+
 }

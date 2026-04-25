@@ -3,6 +3,7 @@ package com.example.assignment.service.impl;
 import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.dto.response.CoursePageRes;
 import com.example.assignment.domain.dto.response.CourseRes;
 import com.example.assignment.domain.entity.Course;
@@ -84,5 +85,43 @@ public class CourseServiceImpl implements CourseService {
 
     CourseRes courseRes = CourseRes.toCourseRes(course);
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, courseRes);
+  }
+
+  @Override
+  @Transactional
+  public ResultResponse updateCourseStatus(Long userId, Long courseId, CourseStatusReq courseStatusReq) {
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+
+    if (user.isStudent()) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    Course course = courseRepository.findByIdWithLock(courseId)
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+
+    if (course.isNotOwnedBy(userId)) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    if(course.isExpired()) {
+      throw new GlobalException(FailedType.COURSE_PERIOD_EXPIRED);
+    }
+
+    if(courseStatusReq.getCourseStatus() == CourseStatus.OPEN) {
+      if (course.isOpen()) throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
+      if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
+      course.openCourse();
+
+    } else if(courseStatusReq.getCourseStatus() == CourseStatus.CLOSED) {
+      if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
+
+      course.closeCourse();
+    } else {
+      throw new GlobalException(FailedType.INVALID_COURSE_STATUS_TRANSITION);
+    }
+
+    return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
   }
 }

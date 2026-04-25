@@ -1,8 +1,6 @@
 package com.example.assignment.domain.dto.response;
 
-import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
-import com.example.assignment.domain.type.EnrollmentStatus;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;

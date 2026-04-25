@@ -2,6 +2,7 @@ package com.example.assignment.controller;
 
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.service.CourseService;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,6 +53,16 @@ public class CourseController {
   public ResponseEntity<ResultResponse> getCourseDetail(@PathVariable Long courseId) {
 
     ResultResponse response = courseService.getCourseDetail(courseId);
+    return new ResponseEntity<>(response, response.getStatus());
+  }
+
+  @PatchMapping("/{userId}/{courseId}/status")
+  public ResponseEntity<ResultResponse> updateCourseStatus(
+      @PathVariable Long userId,
+      @PathVariable Long courseId,
+      @RequestBody @Valid CourseStatusReq courseStatusReq) {
+
+    ResultResponse response = courseService.updateCourseStatus(userId, courseId, courseStatusReq);
     return new ResponseEntity<>(response, response.getStatus());
   }
 

@@ -2,6 +2,7 @@ package com.example.assignment.service;
 
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.type.CourseStatus;
 import jakarta.validation.Valid;
 import java.time.LocalDate;
@@ -14,4 +15,6 @@ public interface CourseService {
       LocalDate startPeriodAt, LocalDate endPeriodAt, CourseStatus courseStatus, int page);
 
   ResultResponse getCourseDetail(Long courseId);
+
+  ResultResponse updateCourseStatus(Long userId, Long courseId, CourseStatusReq courseStatusReq);
 }
