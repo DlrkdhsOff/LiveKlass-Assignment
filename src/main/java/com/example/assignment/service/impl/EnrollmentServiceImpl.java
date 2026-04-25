@@ -118,7 +118,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       throw new GlobalException(FailedType.ALREADY_CANCELLED);
     }
 
-    if(enrollment.isCancellable()) {
+    if(!enrollment.isCancellable()) {
       throw new GlobalException(FailedType.CANCEL_PERIOD_EXPIRED);
     }
 
