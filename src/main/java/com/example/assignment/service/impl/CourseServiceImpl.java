@@ -3,6 +3,7 @@ package com.example.assignment.service.impl;
 import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.dto.response.CoursePageRes;
 import com.example.assignment.domain.dto.response.CourseRes;
 import com.example.assignment.domain.entity.Course;
@@ -88,7 +89,7 @@ public class CourseServiceImpl implements CourseService {
 
   @Override
   @Transactional
-  public ResultResponse updateCourseStatus(Long userId, Long courseId) {
+  public ResultResponse updateCourseStatus(Long userId, Long courseId, CourseStatusReq courseStatusReq) {
 
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
@@ -108,15 +109,16 @@ public class CourseServiceImpl implements CourseService {
       throw new GlobalException(FailedType.COURSE_PERIOD_EXPIRED);
     }
 
-    if(course.isOpen()) {
-      throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
-    }
+    if(courseStatusReq.getCourseStatus() == CourseStatus.OPEN) {
+      if (course.isOpen()) throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
+      if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
+      course.openCourse();
 
-    if (course.isClosed()) {
-      throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
-    }
+    }else if(courseStatusReq.getCourseStatus() == CourseStatus.CLOSED) {
+      if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
 
-    course.openCourse();
+      course.closeCourse();
+    }
 
     return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
   }

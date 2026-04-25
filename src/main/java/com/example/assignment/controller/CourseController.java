@@ -2,6 +2,7 @@ package com.example.assignment.controller;
 
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.service.CourseService;
 import jakarta.validation.Valid;
@@ -55,10 +56,13 @@ public class CourseController {
     return new ResponseEntity<>(response, response.getStatus());
   }
 
-  @GetMapping("/{userId}/{courseId}")
-  public ResponseEntity<ResultResponse> updateCourseStatus(@PathVariable Long userId, @PathVariable Long courseId) {
+  @PatchMapping("/{userId}/{courseId}/status")
+  public ResponseEntity<ResultResponse> updateCourseStatus(
+      @PathVariable Long userId,
+      @PathVariable Long courseId,
+      @RequestBody @Valid CourseStatusReq courseStatusReq) {
 
-    ResultResponse response = courseService.updateCourseStatus(userId, courseId);
+    ResultResponse response = courseService.updateCourseStatus(userId, courseId, courseStatusReq);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
