@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+
 @RequestMapping("/api/v1/enrollment")
 @RequiredArgsConstructor
 public class EnrollmentController {
@@ -21,28 +22,32 @@ public class EnrollmentController {
   private final EnrollmentService enrollmentService;
 
   @PostMapping("/{userId}/{courseId}")
-  public ResponseEntity<ResultResponse> enroll(@PathVariable Long userId, @PathVariable Long courseId) {
+  public ResponseEntity<ResultResponse> enroll(@PathVariable Long userId,
+      @PathVariable Long courseId) {
 
     ResultResponse response = enrollmentService.enroll(userId, courseId);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
   @PatchMapping("/{userId}/{enrollmentId}/pay")
-  public ResponseEntity<ResultResponse> payEnroll(@PathVariable Long userId, @PathVariable Long enrollmentId) {
+  public ResponseEntity<ResultResponse> payEnroll(@PathVariable Long userId,
+      @PathVariable Long enrollmentId) {
 
     ResultResponse response = enrollmentService.payEnroll(userId, enrollmentId);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
   @GetMapping("/{userId}")
-  public ResponseEntity<ResultResponse> getEnroll(@PathVariable Long userId, @RequestParam(defaultValue = "1") int page ) {
+  public ResponseEntity<ResultResponse> getEnroll(@PathVariable Long userId,
+      @RequestParam(defaultValue = "1") int page) {
 
     ResultResponse response = enrollmentService.getEnroll(userId, page);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
   @DeleteMapping("/{userId}/{enrollmentId}")
-  public ResponseEntity<ResultResponse> cancelled(@PathVariable Long userId, @PathVariable Long enrollmentId) {
+  public ResponseEntity<ResultResponse> cancelled(@PathVariable Long userId,
+      @PathVariable Long enrollmentId) {
 
     ResultResponse response = enrollmentService.cancelEnroll(userId, enrollmentId);
     return new ResponseEntity<>(response, response.getStatus());

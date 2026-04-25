@@ -118,6 +118,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       throw new GlobalException(FailedType.ALREADY_CANCELLED);
     }
 
+    if(enrollment.isCancellable()) {
+      throw new GlobalException(FailedType.CANCEL_PERIOD_EXPIRED);
+    }
+
     Course course = courseRepository.findByIdWithLock(enrollment.getCourse().getCourseId())
         .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
 
