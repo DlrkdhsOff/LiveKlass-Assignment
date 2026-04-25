@@ -17,6 +17,8 @@ public enum FailedType {
   ENROLLMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 수강신청 내역입니다."),
   ALREADY_PAID(HttpStatus.BAD_REQUEST, "이미 결제가 완료된 수강신청입니다."),
   ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "이미 취소된 수강신청입니다."),
+  COURSE_ALREADY_OPEN(HttpStatus.BAD_REQUEST, "이미 모집 중인 강의입니다."),
+  COURSE_ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "이미 마감된 강의입니다."),
   ;
 
   private final HttpStatus status;
