@@ -98,14 +98,14 @@ public class CourseServiceImpl implements CourseService {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
-    Course course = courseRepository.findById(courseId)
+    Course course = courseRepository.findByIdWithLock(courseId)
         .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
 
     if (course.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
-    if(course.isBefore()) {
+    if(course.isExpired()) {
       throw new GlobalException(FailedType.COURSE_PERIOD_EXPIRED);
     }
 
@@ -114,10 +114,12 @@ public class CourseServiceImpl implements CourseService {
       if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
       course.openCourse();
 
-    }else if(courseStatusReq.getCourseStatus() == CourseStatus.CLOSED) {
+    } else if(courseStatusReq.getCourseStatus() == CourseStatus.CLOSED) {
       if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
 
       course.closeCourse();
+    } else {
+      throw new GlobalException(FailedType.INVALID_COURSE_STATUS_TRANSITION);
     }
 
     return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
