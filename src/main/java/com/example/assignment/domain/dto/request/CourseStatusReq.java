@@ -1,6 +1,7 @@
 package com.example.assignment.domain.dto.request;
 
 import com.example.assignment.domain.type.CourseStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseStatusReq {
 
+  @Schema(example = "DRAFT / OPEN / CLOSED")
   @NotNull(message = "변경할 강의 상태를 입력해주세요.")
   private CourseStatus courseStatus;
 }
