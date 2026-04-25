@@ -1,5 +1,6 @@
 package com.example.assignment.domain.dto.response;
 
+import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.entity.Course;
 import java.time.LocalDate;
 import java.util.List;
@@ -26,8 +27,8 @@ public class CoursePageRes {
 
   private LocalDate endPeriodAt;
 
-  public static List<CoursePageRes> toList(List<Course> list) {
-    return list.stream()
+  public static PageResponse<CoursePageRes> toList(List<Course> list, int page) {
+    List<CoursePageRes> coursePageRes =  list.stream()
         .map(course ->
             new CoursePageRes(
                 course.getCourseId(),
@@ -40,5 +41,7 @@ public class CoursePageRes {
             )
         )
         .toList();
+
+    return PageResponse.pagination(coursePageRes, page);
   }
 }
