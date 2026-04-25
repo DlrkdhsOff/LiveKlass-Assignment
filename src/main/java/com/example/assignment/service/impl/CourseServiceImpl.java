@@ -4,11 +4,14 @@ import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
 import com.example.assignment.domain.dto.request.CourseStatusReq;
+import com.example.assignment.domain.dto.response.CourseEnrollmentRes;
 import com.example.assignment.domain.dto.response.CoursePageRes;
 import com.example.assignment.domain.dto.response.CourseRes;
 import com.example.assignment.domain.entity.Course;
+import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.repository.CourseRepository;
+import com.example.assignment.domain.repository.EnrollmentRepository;
 import com.example.assignment.domain.repository.UserRepository;
 import com.example.assignment.domain.repository.querydsl.CourseQueryRepository;
 import com.example.assignment.domain.type.CourseStatus;
@@ -29,6 +32,7 @@ public class CourseServiceImpl implements CourseService {
   private final UserRepository userRepository;
   private final CourseRepository courseRepository;
   private final CourseQueryRepository courseQueryRepository;
+  private final EnrollmentRepository enrollmentRepository;
 
   @Override
   @Transactional
@@ -70,7 +74,7 @@ public class CourseServiceImpl implements CourseService {
     List<Course> courses = courseQueryRepository.searchCourses(creatorName, title, minAmount,
         maxAmount, startPeriodAt, endPeriodAt, courseStatus);
 
-    List<CoursePageRes> courseRes = CoursePageRes.toCourseResList(courses);
+    List<CoursePageRes> courseRes = CoursePageRes.toList(courses);
 
     PageResponse<CoursePageRes> pageResponse = PageResponse.pagination(courseRes, page);
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES, pageResponse);
@@ -83,7 +87,7 @@ public class CourseServiceImpl implements CourseService {
     Course course = courseRepository.findById(courseId)
         .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
 
-    CourseRes courseRes = CourseRes.toCourseRes(course);
+    CourseRes courseRes = CourseRes.of(course);
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, courseRes);
   }
 
@@ -123,5 +127,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ResultResponse getCourseEnrollments(Long userId, Long courseId, int page) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+
+    if (user.isStudent()) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    Course course = courseRepository.findById(courseId)
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+
+    if (course.isNotOwnedBy(userId)) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    List<Enrollment> enrollments = enrollmentRepository.findAllByCourseWithUser(course);
+    CourseEnrollmentRes response = CourseEnrollmentRes.of(course, enrollments, page);
+
+    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSE_ENROLLMENTS, response);
   }
 }
