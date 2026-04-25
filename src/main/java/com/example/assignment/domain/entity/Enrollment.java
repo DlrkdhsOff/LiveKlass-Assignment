@@ -38,6 +38,8 @@ public class Enrollment extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private EnrollmentStatus enrollmentStatus;
 
+  // =================== 정적 팩토리 메서드 ===================
+
   public static Enrollment toEntity(Course course, User user) {
     return Enrollment.builder()
         .course(course)
@@ -45,6 +47,16 @@ public class Enrollment extends BaseEntity {
         .enrollmentStatus(EnrollmentStatus.PENDING)
         .build();
   }
+
+  public static Enrollment toWaitlistEntity(Course course, User user) {
+    return Enrollment.builder()
+        .course(course)
+        .user(user)
+        .enrollmentStatus(EnrollmentStatus.WAITLISTED)
+        .build();
+  }
+
+  // =================== 상태 판별 ===================
 
   public boolean isNotOwnedBy(Long userId) {
     return !this.user.getUserId().equals(userId);
@@ -58,16 +70,13 @@ public class Enrollment extends BaseEntity {
     return enrollmentStatus == EnrollmentStatus.CANCELLED;
   }
 
-  public void confirm() {
-    this.enrollmentStatus = EnrollmentStatus.CONFIRMED;
-  }
-
-  public void cancel() {
-    this.enrollmentStatus = EnrollmentStatus.CANCELLED;
+  public boolean isWaitlisted() {
+    return enrollmentStatus == EnrollmentStatus.WAITLISTED;
   }
 
   public boolean isCancellable() {
-    if (this.enrollmentStatus == EnrollmentStatus.PENDING) {
+    if (this.enrollmentStatus == EnrollmentStatus.PENDING
+        || this.enrollmentStatus == EnrollmentStatus.WAITLISTED) {
       return true;
     }
     if (this.enrollmentStatus == EnrollmentStatus.CONFIRMED) {
@@ -76,5 +85,19 @@ public class Enrollment extends BaseEntity {
           .isAfter(LocalDateTime.now());
     }
     return false;
+  }
+
+  // =================== 상태 변경 ===================
+
+  public void confirm() {
+    this.enrollmentStatus = EnrollmentStatus.CONFIRMED;
+  }
+
+  public void cancel() {
+    this.enrollmentStatus = EnrollmentStatus.CANCELLED;
+  }
+
+  public void promote() {
+    this.enrollmentStatus = EnrollmentStatus.PENDING;
   }
 }
