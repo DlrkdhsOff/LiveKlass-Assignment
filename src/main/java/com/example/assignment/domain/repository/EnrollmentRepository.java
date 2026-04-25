@@ -22,4 +22,12 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     ORDER BY e.createdAt DESC
     """)
   List<Enrollment> findAllByUserWithCourse(@Param("user") User user);
+
+  @Query("""
+    SELECT e FROM Enrollment e
+    JOIN FETCH e.user
+    WHERE e.course = :course
+    ORDER BY e.createdAt DESC
+    """)
+  List<Enrollment> findAllByCourseWithUser(@Param("course") Course course);
 }
