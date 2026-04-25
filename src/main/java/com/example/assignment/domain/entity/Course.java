@@ -114,4 +114,8 @@ public class Course extends BaseEntity {
     this.courseStatus = CourseStatus.OPEN;
   }
 
+  public void closeCourse() {
+    this.courseStatus = CourseStatus.CLOSED;
+  }
+
 }
