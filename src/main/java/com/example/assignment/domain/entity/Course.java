@@ -2,6 +2,8 @@ package com.example.assignment.domain.entity;
 
 import com.example.assignment.domain.dto.request.CourseReq;
 import com.example.assignment.domain.type.CourseStatus;
+import com.example.assignment.domain.type.FailedType;
+import com.example.assignment.exception.GlobalException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -90,6 +92,22 @@ public class Course extends BaseEntity {
     if (this.courseStatus == CourseStatus.CLOSED && !this.isFull()) {
       this.courseStatus = CourseStatus.OPEN;
     }
+  }
+
+  public boolean isNotOwnedBy(Long userId) {
+    return !this.user.getUserId().equals(userId);
+  }
+
+  public void openCourse() {
+    if (this.courseStatus == CourseStatus.OPEN) {
+      throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
+    }
+
+    if (this.courseStatus == CourseStatus.CLOSED) {
+      throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
+    }
+
+    this.courseStatus = CourseStatus.OPEN;
   }
 
 }
