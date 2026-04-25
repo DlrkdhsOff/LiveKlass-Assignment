@@ -14,4 +14,6 @@ public interface CourseService {
       LocalDate startPeriodAt, LocalDate endPeriodAt, CourseStatus courseStatus, int page);
 
   ResultResponse getCourseDetail(Long courseId);
+
+  ResultResponse updateCourseStatus(Long userId, Long courseId);
 }

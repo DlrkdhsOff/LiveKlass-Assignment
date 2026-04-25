@@ -85,4 +85,26 @@ public class CourseServiceImpl implements CourseService {
     CourseRes courseRes = CourseRes.toCourseRes(course);
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, courseRes);
   }
+
+  @Override
+  @Transactional
+  public ResultResponse updateCourseStatus(Long userId, Long courseId) {
+
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+
+    if (user.isStudent()) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    Course course = courseRepository.findById(courseId)
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+
+    if (course.isNotOwnedBy(userId)) {
+      throw new GlobalException(FailedType.ACCESS_DENIED);
+    }
+
+    course.openCourse();
+    return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
+  }
 }
