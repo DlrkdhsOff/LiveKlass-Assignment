@@ -29,6 +29,13 @@ public class ResultResponse {
     this.data = data;
   }
 
+  public ResultResponse(HttpStatus status, String message) {
+    this.code = status.value();
+    this.status = status;
+    this.message = message;
+    this.data = null;
+  }
+
   // 요청 응답 시 반환할 데이터가 존재하지 않을 경우
   public static ResultResponse of(SuccessType successResultCode) {
     return new ResultResponse(successResultCode, null);
@@ -37,5 +44,4 @@ public class ResultResponse {
   public static ResultResponse of(FailedType failedResultCode) {
     return new ResultResponse(failedResultCode, null);
   }
-
 }

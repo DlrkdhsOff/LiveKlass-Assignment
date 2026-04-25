@@ -33,6 +33,9 @@ public enum FailedType {
   // =================== 결제 ===================
   ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제가 완료된 수강신청입니다."),
   ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "이미 취소된 수강신청입니다."),
+
+  // =================== 전역 예외 ===================
+  INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 입력값입니다."),
   ;
 
   private final HttpStatus status;
