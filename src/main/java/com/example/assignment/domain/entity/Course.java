@@ -98,7 +98,7 @@ public class Course extends BaseEntity {
     return !this.user.getUserId().equals(userId);
   }
 
-  public boolean isBefore() {
+  public boolean isExpired() {
     return this.endPeriodAt.isBefore(LocalDate.now());
   }
 
