@@ -21,6 +21,7 @@ public enum FailedType {
   COURSE_ALREADY_OPEN(HttpStatus.BAD_REQUEST, "이미 모집 중인 강의입니다."),
   COURSE_ALREADY_CLOSED(HttpStatus.BAD_REQUEST, "이미 마감된 강의입니다."),
   INVALID_COURSE_STATUS_TRANSITION(HttpStatus.BAD_REQUEST, "해당 상태로는 변경할 수 없습니다."),
+  CANCEL_PERIOD_EXPIRED(HttpStatus.BAD_REQUEST, "취소 가능 기간(결제 후 7일)이 지났습니다."),
   ;
 
   private final HttpStatus status;
