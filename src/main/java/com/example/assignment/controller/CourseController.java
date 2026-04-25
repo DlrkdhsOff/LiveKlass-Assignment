@@ -66,7 +66,7 @@ public class CourseController {
     return new ResponseEntity<>(response, response.getStatus());
   }
 
-  @GetMapping("/{userId}/{courseId}")
+  @GetMapping("/{userId}/{courseId}/enrollments")
   public ResponseEntity<ResultResponse> getCourseEnrollments(
       @PathVariable Long userId,
       @PathVariable Long courseId,
