@@ -1,5 +1,7 @@
 package com.example.assignment.domain.dto.response;
 
+import com.example.assignment.domain.dto.PageResponse;
+import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,23 +34,27 @@ public class EnrollmentPageRes {
 
   private String enrollmentStatus;
 
-  public static List<EnrollmentPageRes> toList(List<Enrollment> list) {
-    return list.stream()
-        .map(enrollment ->
-            new EnrollmentPageRes(
-                enrollment.getEnrollmentId(),
-                enrollment.getCourse().getCourseId(),
-                enrollment.getCourse().getTitle(),
-                enrollment.getCourse().getDescription(),
-                enrollment.getCourse().getUser().getName(),
-                enrollment.getCourse().getCourseStatus().getValue(),
-                enrollment.getCourse().getStartPeriodAt(),
-                enrollment.getCourse().getEndPeriodAt(),
-                enrollment.getCourse().getEnrollmentCnt() + " / " + enrollment.getCourse().getPersonnel(),
-                enrollment.getEnrollmentStatus().getValue()
-            )
-        )
+  public static PageResponse<EnrollmentPageRes> toList(List<Enrollment> list, int page) {
+    List<EnrollmentPageRes> pageResList = list.stream()
+        .map(EnrollmentPageRes::from)
         .toList();
+
+    return PageResponse.pagination(pageResList, page);
   }
 
+  private static EnrollmentPageRes from(Enrollment enrollment) {
+    Course course = enrollment.getCourse();
+    return new EnrollmentPageRes(
+        enrollment.getEnrollmentId(),
+        course.getCourseId(),
+        course.getTitle(),
+        course.getDescription(),
+        course.getUser().getName(),
+        course.getCourseStatus().getValue(),
+        course.getStartPeriodAt(),
+        course.getEndPeriodAt(),
+        course.getEnrollmentCnt() + " / " + course.getPersonnel(),
+        enrollment.getEnrollmentStatus().getValue()
+    );
+  }
 }

@@ -1,5 +1,6 @@
 package com.example.assignment.domain.repository.querydsl;
 
+import com.example.assignment.domain.dto.request.CourseSearchReq;
 import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.QCourse;
 import com.example.assignment.domain.type.CourseStatus;
@@ -17,53 +18,57 @@ public class CourseQueryRepository {
 
   private final JPAQueryFactory queryFactory;
 
-  public List<Course> searchCourses(String creatorName, String title, Long minAmount, Long maxAmount,
-      LocalDate startPeriodAt, LocalDate endPeriodAt, CourseStatus courseStatus) {
+
+  /**
+   * 강의 목록 동적 조회
+   * 조건이 null 이면 해당 조건은 자동으로 제외됨
+   */
+  public List<Course> searchCourses(CourseSearchReq searchReq) {
     QCourse course = QCourse.course;
 
     return queryFactory
         .selectFrom(course)
         .leftJoin(course.user).fetchJoin()
         .where(
-            creatorNameEq(creatorName),
-            titleContains(title),
-            amountGoe(minAmount),
-            amountLoe(maxAmount),
-            startPeriodAtGoe(startPeriodAt),
-            endPeriodAtLoe(endPeriodAt),
-            courseStatusEq(courseStatus)
+            creatorNameEq(course, searchReq.getCreatorName()),
+            titleContains(course, searchReq.getTitle()),
+            amountGoe(course, searchReq.getMinAmount()),
+            amountLoe(course, searchReq.getMaxAmount()),
+            startPeriodAtGoe(course, searchReq.getStartPeriodAt()),
+            endPeriodAtLoe(course, searchReq.getEndPeriodAt()),
+            courseStatusEq(course, searchReq.getCourseStatus())
         )
         .fetch();
   }
 
-  // null이면 조건 자체를 제외 (동적 쿼리 핵심)
-  private BooleanExpression creatorNameEq(String name) {
-    return name == null ? null : QCourse.course.user.name.eq(name)
-        .and(QCourse.course.user.userRole.eq(UserRole.CREATORS));
+  // null 이면 조건 자체를 제외 (동적 쿼리 핵심)
+
+  private BooleanExpression creatorNameEq(QCourse course, String name) {
+    return (name == null || name.isBlank()) ? null
+        : course.user.name.eq(name).and(course.user.userRole.eq(UserRole.CREATORS));
   }
 
-  private BooleanExpression titleContains(String title) {
-    return title == null ? null : QCourse.course.title.contains(title);
+  private BooleanExpression titleContains(QCourse course, String title) {
+    return (title == null || title.isBlank()) ? null : course.title.contains(title);
   }
 
-  private BooleanExpression amountGoe(Long minAmount) {
-    return minAmount == null ? null : QCourse.course.amount.goe(minAmount);
+  private BooleanExpression amountGoe(QCourse course, Long minAmount) {
+    return minAmount == null ? null : course.amount.goe(minAmount);
   }
 
-  private BooleanExpression amountLoe(Long maxAmount) {
-    return maxAmount == null ? null : QCourse.course.amount.loe(maxAmount);
+  private BooleanExpression amountLoe(QCourse course, Long maxAmount) {
+    return maxAmount == null ? null : course.amount.loe(maxAmount);
   }
 
-  private BooleanExpression startPeriodAtGoe(LocalDate date) {
-    return date == null ? null : QCourse.course.startPeriodAt.goe(date);
+  private BooleanExpression startPeriodAtGoe(QCourse course, LocalDate date) {
+    return date == null ? null : course.startPeriodAt.goe(date);
   }
 
-  private BooleanExpression endPeriodAtLoe(LocalDate date) {
-    return date == null ? null : QCourse.course.endPeriodAt.loe(date);
+  private BooleanExpression endPeriodAtLoe(QCourse course, LocalDate date) {
+    return date == null ? null : course.endPeriodAt.loe(date);
   }
 
-  private BooleanExpression courseStatusEq(CourseStatus status) {
-    return status == null ? null : QCourse.course.courseStatus.eq(status);
+  private BooleanExpression courseStatusEq(QCourse course, CourseStatus status) {
+    return status == null ? null : course.courseStatus.eq(status);
   }
-
 }

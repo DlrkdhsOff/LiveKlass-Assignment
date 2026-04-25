@@ -2,6 +2,7 @@ package com.example.assignment.service;
 
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseSearchReq;
 import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.type.CourseStatus;
 import jakarta.validation.Valid;
@@ -11,8 +12,7 @@ public interface CourseService {
 
   ResultResponse register(@Valid CourseReq courseReq);
 
-  ResultResponse getCourses(String creatorName, String title, Long minAmount, Long maxAmount,
-      LocalDate startPeriodAt, LocalDate endPeriodAt, CourseStatus courseStatus, int page);
+  ResultResponse getCourses(CourseSearchReq searchReq, int page);
 
   ResultResponse getCourseDetail(Long courseId);
 

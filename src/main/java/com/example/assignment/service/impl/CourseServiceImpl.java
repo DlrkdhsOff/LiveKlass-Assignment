@@ -3,6 +3,7 @@ package com.example.assignment.service.impl;
 import com.example.assignment.domain.dto.PageResponse;
 import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.request.CourseReq;
+import com.example.assignment.domain.dto.request.CourseSearchReq;
 import com.example.assignment.domain.dto.request.CourseStatusReq;
 import com.example.assignment.domain.dto.response.CourseEnrollmentRes;
 import com.example.assignment.domain.dto.response.CoursePageRes;
@@ -34,94 +35,96 @@ public class CourseServiceImpl implements CourseService {
   private final CourseQueryRepository courseQueryRepository;
   private final EnrollmentRepository enrollmentRepository;
 
+  /**
+   * 강의 등록
+   * - 모든 필드가 동일한 강의 중복 등록 불가
+   */
   @Override
   @Transactional
   public ResultResponse register(CourseReq courseReq) {
 
-    User user = userRepository.findById(courseReq.getUserId())
-        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+    User user = getUser(courseReq.getUserId());
 
-    // security 설정 없어서 임시로 설정
-    if (user.isStudent()) {
-      throw new GlobalException(FailedType.ACCESS_DENIED);
-    }
+    // TODO: 로그인 기능 및 인증/인가 로직 미구현으로 userId 를 직접 받는 방식으로 대체
+    if (user.isStudent()) throw new GlobalException(FailedType.ACCESS_DENIED);
 
-    boolean isDuplicate = courseRepository.existsDuplicateCourse(
-        user,
-        courseReq.getTitle(),
-        courseReq.getDescription(),
-        courseReq.getAmount(),
-        courseReq.getPersonnel(),
-        courseReq.getStartPeriodAt(),
-        courseReq.getEndPeriodAt(),
-        courseReq.getCourseStatus()
-    );
+    if (isDuplicateCourse(user, courseReq)) throw new GlobalException(FailedType.COURSE_IS_DUPLICATE);
 
-    if(isDuplicate) throw new GlobalException(FailedType.COURSE_IS_DUPLICATE);
-
-    Course course = Course.toEntity(courseReq, user);
-
-    courseRepository.save(course);
+    courseRepository.save(Course.toEntity(courseReq, user));
 
     return ResultResponse.of(SuccessType.SUCCESS_REGISTRATION_COURSE);
   }
 
+  /**
+   * 강의 목록 조회
+   * - 모든 조건은 선택값 (없으면 전체 조회)
+   * - 강사명, 제목, 가격 범위, 기간, 상태로 필터링 가능
+   * - 페이지네이션 적용 (기본 1페이지)
+   */
   @Override
   @Transactional(readOnly = true)
-  public ResultResponse getCourses(String creatorName, String title, Long minAmount, Long maxAmount,
-      LocalDate startPeriodAt, LocalDate endPeriodAt, CourseStatus courseStatus, int page) {
+  public ResultResponse getCourses(CourseSearchReq searchReq, int page) {
 
-    List<Course> courses = courseQueryRepository.searchCourses(creatorName, title, minAmount,
-        maxAmount, startPeriodAt, endPeriodAt, courseStatus);
+    List<Course> courses = courseQueryRepository.searchCourses(searchReq);
 
-    List<CoursePageRes> courseRes = CoursePageRes.toList(courses);
+    PageResponse<CoursePageRes> response = CoursePageRes.toList(courses, page);
 
-    PageResponse<CoursePageRes> pageResponse = PageResponse.pagination(courseRes, page);
-    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES, pageResponse);
+    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES, response);
   }
 
+  /**
+   * 강의 상세 조회
+   * - 현재 수강 신청 인원 포함
+   */
   @Override
   @Transactional(readOnly = true)
   public ResultResponse getCourseDetail(Long courseId) {
 
-    Course course = courseRepository.findById(courseId)
-        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+    Course course = getCourse(courseId);
+    CourseRes response = CourseRes.of(course);
 
-    CourseRes courseRes = CourseRes.of(course);
-    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, courseRes);
+    return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSES_DETAIL, response);
   }
 
+  /**
+   * 강의 상태 변경
+   * - 수강 기간 만료 시 변경 불가
+   * - 허용 전환: DRAFT → OPEN, DRAFT → CLOSED, OPEN → CLOSED
+   * - 불가 전환: CLOSED → OPEN, CLOSED → CLOSED, OPEN → OPEN
+   * - 조기 마감 시 동시성 방지를 위해 비관적 락 적용
+   */
   @Override
   @Transactional
   public ResultResponse updateCourseStatus(Long userId, Long courseId, CourseStatusReq courseStatusReq) {
 
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+    User user = getUser(userId);
 
+    // TODO: 로그인 기능 및 인증/인가 로직 미구현으로 userId 를 직접 받는 방식으로 대체
     if (user.isStudent()) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
-    Course course = courseRepository.findByIdWithLock(courseId)
-        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+    Course course = getCourseWithLock(courseId);
 
     if (course.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
-    if(course.isExpired()) {
+    if (course.isExpired()) {
       throw new GlobalException(FailedType.COURSE_PERIOD_EXPIRED);
     }
 
-    if(courseStatusReq.getCourseStatus() == CourseStatus.OPEN) {
+    CourseStatus status = courseStatusReq.getCourseStatus();
+
+    if (status == CourseStatus.OPEN) {
       if (course.isOpen()) throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
       if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
       course.openCourse();
 
-    } else if(courseStatusReq.getCourseStatus() == CourseStatus.CLOSED) {
+    } else if (status == CourseStatus.CLOSED) {
       if (course.isClosed()) throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
-
       course.closeCourse();
+
     } else {
       throw new GlobalException(FailedType.INVALID_COURSE_STATUS_TRANSITION);
     }
@@ -129,18 +132,24 @@ public class CourseServiceImpl implements CourseService {
     return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
   }
 
+  // =================== 수강생 목록 조회 ===================
+
+  /**
+   * 강의별 수강생 목록 조회
+   * - 최신순 정렬, 페이지네이션 적용
+   */
   @Override
   @Transactional(readOnly = true)
   public ResultResponse getCourseEnrollments(Long userId, Long courseId, int page) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
 
+    User user = getUser(userId);
+
+    // TODO: 로그인 기능 및 인증/인가 로직 미구현으로 userId 를 직접 받는 방식으로 대체
     if (user.isStudent()) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
-    Course course = courseRepository.findById(courseId)
-        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+    Course course = getCourse(courseId);
 
     if (course.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
@@ -150,5 +159,44 @@ public class CourseServiceImpl implements CourseService {
     CourseEnrollmentRes response = CourseEnrollmentRes.of(course, enrollments, page);
 
     return new ResultResponse(SuccessType.SUCCESS_INQUIRY_COURSE_ENROLLMENTS, response);
+  }
+
+  // =================== 내부 메서드 ===================
+
+  private User getUser(Long userId) {
+    return userRepository.findById(userId)
+        .orElseThrow(() -> new GlobalException(FailedType.USER_NOT_FOUND));
+  }
+
+  private Course getCourse(Long courseId) {
+    return courseRepository.findById(courseId)
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+  }
+
+  /**
+   * courseId 로 Course 조회 (비관적 락 적용)
+   * 강의 상태 변경 시 동시 수강 신청과의 경합 방지
+   * 존재하지 않으면 COURSE_NOT_FOUND 예외 발생
+   */
+  private Course getCourseWithLock(Long courseId) {
+    return courseRepository.findByIdWithLock(courseId)
+        .orElseThrow(() -> new GlobalException(FailedType.COURSE_NOT_FOUND));
+  }
+
+  /**
+   * 강의 중복 여부 확인
+   * 동일 강사가 모든 필드가 같은 강의를 등록하는 경우 중복으로 판단
+   */
+  private boolean isDuplicateCourse(User user, CourseReq courseReq) {
+    return courseRepository.existsDuplicateCourse(
+        user,
+        courseReq.getTitle(),
+        courseReq.getDescription(),
+        courseReq.getAmount(),
+        courseReq.getPersonnel(),
+        courseReq.getStartPeriodAt(),
+        courseReq.getEndPeriodAt(),
+        courseReq.getCourseStatus()
+    );
   }
 }
