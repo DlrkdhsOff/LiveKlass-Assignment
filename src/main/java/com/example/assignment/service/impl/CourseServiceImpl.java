@@ -30,6 +30,7 @@ public class CourseServiceImpl implements CourseService {
   private final CourseQueryRepository courseQueryRepository;
 
   @Override
+  @Transactional
   public ResultResponse register(CourseReq courseReq) {
 
     User user = userRepository.findById(courseReq.getUserId())
