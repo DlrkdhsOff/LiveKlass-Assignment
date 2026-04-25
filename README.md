@@ -663,8 +663,6 @@ INSERT INTO enrollment (course_id, user_id, enrollment_status, created_at, updat
 
 ### 활용한 부분
 
-- 요구사항 분석 및 설계 방향 논의
-- 도메인 모델 설계 및 엔티티 구조 검토
 - 비즈니스 로직 정책 논의
 - 코드 리뷰 및 개선 포인트 피드백
 - 발생한 에러 원인 분석 및 해결 방향 제시
