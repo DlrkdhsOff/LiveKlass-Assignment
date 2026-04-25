@@ -104,7 +104,20 @@ public class CourseServiceImpl implements CourseService {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
+    if(course.isBefore()) {
+      throw new GlobalException(FailedType.COURSE_PERIOD_EXPIRED);
+    }
+
+    if(course.isOpen()) {
+      throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
+    }
+
+    if (course.isClosed()) {
+      throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
+    }
+
     course.openCourse();
+
     return ResultResponse.of(SuccessType.SUCCESS_UPDATE_COURSE_STATUS);
   }
 }
