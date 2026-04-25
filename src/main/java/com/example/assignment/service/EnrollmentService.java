@@ -4,11 +4,11 @@ import com.example.assignment.domain.dto.ResultResponse;
 
 public interface EnrollmentService {
 
-  ResultResponse enroll(Long userId, Long courseId);
+  ResultResponse enrollment(Long userId, Long courseId);
 
-  ResultResponse payEnroll(Long userId, Long enrollmentId);
+  ResultResponse payEnrollment(Long userId, Long enrollmentId);
 
-  ResultResponse getEnroll(Long userId, int page);
+  ResultResponse getEnrollments(Long userId, int page);
 
-  ResultResponse cancelEnroll(Long userId, Long enrollmentId);
+  ResultResponse cancelEnrollment(Long userId, Long enrollmentId);
 }
