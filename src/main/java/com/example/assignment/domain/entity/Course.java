@@ -98,15 +98,19 @@ public class Course extends BaseEntity {
     return !this.user.getUserId().equals(userId);
   }
 
+  public boolean isBefore() {
+    return this.endPeriodAt.isBefore(LocalDate.now());
+  }
+
+  public boolean isOpen() {
+    return this.courseStatus == CourseStatus.OPEN;
+  }
+
+  public boolean isClosed() {
+    return this.courseStatus == CourseStatus.CLOSED;
+  }
+
   public void openCourse() {
-    if (this.courseStatus == CourseStatus.OPEN) {
-      throw new GlobalException(FailedType.COURSE_ALREADY_OPEN);
-    }
-
-    if (this.courseStatus == CourseStatus.CLOSED) {
-      throw new GlobalException(FailedType.COURSE_ALREADY_CLOSED);
-    }
-
     this.courseStatus = CourseStatus.OPEN;
   }
 
