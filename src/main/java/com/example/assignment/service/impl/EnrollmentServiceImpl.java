@@ -92,6 +92,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
       throw new GlobalException(FailedType.ACCESS_DENIED);
     }
 
+    if (enrollment.isWaitlisted()) {
+      throw new GlobalException(FailedType.WAITLISTED_CANNOT_PAY);
+    }
+
     if (enrollment.isConfirmed()) {
       throw new GlobalException(FailedType.ALREADY_PAID);
     }
