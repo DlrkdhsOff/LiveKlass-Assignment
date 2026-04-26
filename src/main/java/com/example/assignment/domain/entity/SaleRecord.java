@@ -1,5 +1,6 @@
 package com.example.assignment.domain.entity;
 
+import com.example.assignment.domain.type.EnrollmentStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,10 +31,16 @@ public class SaleRecord extends BaseEntity {
 
   private Long amount;
 
+  private Long refundAmount;
+
   public static SaleRecord toEntity(Enrollment enrollment) {
     return SaleRecord.builder()
         .enrollment(enrollment)
         .amount(enrollment.getCourse().getAmount())
         .build();
+  }
+
+  public void cancel() {
+    this.refundAmount = this.amount;
   }
 }
