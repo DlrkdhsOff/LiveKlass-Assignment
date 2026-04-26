@@ -5,9 +5,11 @@ import com.example.assignment.domain.dto.ResultResponse;
 import com.example.assignment.domain.dto.response.EnrollmentPageRes;
 import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
+import com.example.assignment.domain.entity.SaleRecord;
 import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.repository.CourseRepository;
 import com.example.assignment.domain.repository.EnrollmentRepository;
+import com.example.assignment.domain.repository.SaleRecordRepository;
 import com.example.assignment.domain.repository.UserRepository;
 import com.example.assignment.domain.type.EnrollmentStatus;
 import com.example.assignment.domain.type.FailedType;
@@ -26,6 +28,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   private final EnrollmentRepository enrollmentRepository;
   private final CourseRepository courseRepository;
   private final UserRepository userRepository;
+  private final SaleRecordRepository saleRecordRepository;
 
   /**
    * 수강 신청
@@ -86,7 +89,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   @Transactional
   public ResultResponse payEnrollment(Long userId, Long enrollmentId) {
 
-    Enrollment enrollment = getEnrollment(enrollmentId);
+    Enrollment enrollment = getEnrollmentWithCourse(enrollmentId);
 
     if (enrollment.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
@@ -105,6 +108,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     enrollment.confirm();
+
+    SaleRecord saleRecord = SaleRecord.toEntity(enrollment);
+    saleRecordRepository.save(saleRecord);
 
     return ResultResponse.of(SuccessType.SUCCESS_PAYMENT);
   }
