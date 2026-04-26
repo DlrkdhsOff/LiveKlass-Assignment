@@ -20,7 +20,6 @@ import com.example.assignment.domain.type.FailedType;
 import com.example.assignment.domain.type.SuccessType;
 import com.example.assignment.exception.GlobalException;
 import com.example.assignment.service.CourseService;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

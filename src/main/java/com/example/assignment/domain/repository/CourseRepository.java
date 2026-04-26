@@ -1,8 +1,6 @@
 package com.example.assignment.domain.repository;
 
 import com.example.assignment.domain.entity.Course;
-import com.example.assignment.domain.entity.User;
-import com.example.assignment.domain.type.CourseStatus;
 import jakarta.persistence.LockModeType;
 import java.time.LocalDate;
 import java.util.List;
