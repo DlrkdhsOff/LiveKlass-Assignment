@@ -8,6 +8,7 @@ import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.domain.type.UserRole;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +40,13 @@ public class CourseQueryRepository {
             startPeriodAtGoe(course, searchReq.getStartPeriodAt()),
             endPeriodAtLoe(course, searchReq.getEndPeriodAt()),
             courseStatusEq(course, searchReq.getCourseStatus())
+        )
+        .orderBy(
+            Expressions.cases()
+                .when(course.courseStatus.eq(CourseStatus.OPEN)).then(1)
+                .when(course.courseStatus.eq(CourseStatus.DRAFT)).then(2)
+                .otherwise(3).asc(),
+            course.startPeriodAt.asc()
         )
         .fetch();
   }
