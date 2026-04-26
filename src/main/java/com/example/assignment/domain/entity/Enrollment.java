@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -90,7 +91,9 @@ public class Enrollment extends BaseEntity {
   /**
    * 취소 가능 여부 확인
    * - PENDING, WAITLISTED: 결제 전이므로 언제든 취소 가능
-   * - CONFIRMED: 결제 완료 시점(updatedAt) 기준 7일 이내만 취소 가능
+   * - CONFIRMED: 아래 두 조건을 모두 만족하는 경우에만 취소 가능
+   *   1. 결제 완료 시점(updatedAt) 기준 7일 이내
+   *   2. 강의 시작 하루 전까지
    * - CANCELLED: 취소 불가 (false 반환)
    */
   public boolean isCancellable() {
@@ -99,9 +102,15 @@ public class Enrollment extends BaseEntity {
       return true;
     }
     if (this.enrollmentStatus == EnrollmentStatus.CONFIRMED) {
-      return this.getUpdatedAt()
+      boolean withinDeadline = this.getUpdatedAt()
           .plusDays(7)
           .isAfter(LocalDateTime.now());
+
+      boolean beforeCourseStart = this.course.getStartPeriodAt()
+          .minusDays(1)
+          .isAfter(LocalDate.now());
+
+      return withinDeadline && beforeCourseStart;
     }
     return false;
   }
