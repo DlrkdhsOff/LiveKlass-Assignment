@@ -67,7 +67,7 @@ public class CloseCourseStepConfig {
   }
 
   /**
-   * 강의 시작 하루 전까지 OPEN 또는 DRAFT 상태인 강의 조회
+   * 강의 시작 3일 전까지 OPEN 또는 DRAFT 상태인 강의 조회
    */
   @Bean
   public ItemReader<Course> closeCourseReader() {

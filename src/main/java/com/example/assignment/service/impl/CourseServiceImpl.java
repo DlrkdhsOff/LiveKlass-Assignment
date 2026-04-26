@@ -20,7 +20,6 @@ import com.example.assignment.domain.type.FailedType;
 import com.example.assignment.domain.type.SuccessType;
 import com.example.assignment.exception.GlobalException;
 import com.example.assignment.service.CourseService;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -188,15 +187,6 @@ public class CourseServiceImpl implements CourseService {
    * 동일 강사가 모든 필드가 같은 강의를 등록하는 경우 중복으로 판단
    */
   private boolean isDuplicateCourse(User user, CourseReq courseReq) {
-    return courseRepository.existsDuplicateCourse(
-        user,
-        courseReq.getTitle(),
-        courseReq.getDescription(),
-        courseReq.getAmount(),
-        courseReq.getPersonnel(),
-        courseReq.getStartPeriodAt(),
-        courseReq.getEndPeriodAt(),
-        courseReq.getCourseStatus()
-    );
+    return courseQueryRepository.existsDuplicateCourse(user, courseReq);
   }
 }

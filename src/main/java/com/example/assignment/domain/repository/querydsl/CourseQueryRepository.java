@@ -1,8 +1,10 @@
 package com.example.assignment.domain.repository.querydsl;
 
+import com.example.assignment.domain.dto.request.CourseReq;
 import com.example.assignment.domain.dto.request.CourseSearchReq;
 import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.QCourse;
+import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.domain.type.UserRole;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,6 +41,30 @@ public class CourseQueryRepository {
             courseStatusEq(course, searchReq.getCourseStatus())
         )
         .fetch();
+  }
+
+  /**
+   * 강의 중복 여부 확인
+   * 동일 강사가 제목, 설명, 가격, 정원, 기간, 상태가 모두 일치하는 강의를 등록하는 경우 중복으로 판단
+   * 존재 여부만 확인하므로 LIMIT 1 로 처리 (selectOne + fetchFirst)
+   */
+  public boolean existsDuplicateCourse(User user, CourseReq courseReq) {
+    QCourse course = QCourse.course;
+
+    return queryFactory
+        .selectOne()
+        .from(course)
+        .where(
+            course.user.eq(user),
+            course.title.eq(courseReq.getTitle()),
+            course.description.eq(courseReq.getDescription()),
+            course.amount.eq(courseReq.getAmount()),
+            course.personnel.eq(courseReq.getPersonnel()),
+            course.startPeriodAt.eq(courseReq.getStartPeriodAt()),
+            course.endPeriodAt.eq(courseReq.getEndPeriodAt()),
+            course.courseStatus.eq(courseReq.getCourseStatus())
+        )
+        .fetchFirst() != null;
   }
 
   // null 이면 조건 자체를 제외 (동적 쿼리 핵심)

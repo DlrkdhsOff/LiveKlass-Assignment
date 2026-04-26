@@ -73,7 +73,7 @@ public class CancelUnpaidStepConfig {
   }
 
   /**
-   * 강의 시작 하루 전까지 미결제(PENDING) 상태인 수강신청 건 조회
+   * 강의 시작 3일 전까지 미결제(PENDING) 상태인 수강신청 건 조회
    */
   @Bean
   public ItemReader<Enrollment> cancelUnpaidReader() {

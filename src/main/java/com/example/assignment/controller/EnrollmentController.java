@@ -76,11 +76,11 @@ public class EnrollmentController {
    * 수강 취소
    * DELETE /api/v1/enrollment/{userId}/{enrollmentId}
    * - PENDING, WAITLISTED: 언제든 취소 가능
-   * - CONFIRMED: 결제 후 7일 이내만 취소 가능
-   * - 취소 시 대기자 자동 승격
+   * - CONFIRMED: 결제 후 7일 이내만 취소 가능 AND 강의 시작 3일 전 까지 취소 가능
+   * - 취소 시 강의가 OPEN 상태인 경우에만 대기자 자동 승격
    */
   @DeleteMapping("/{userId}/{enrollmentId}")
-  @Operation(summary = "수강 취소", description = "결제 전 언제든 취소 가능. 결제 후 7일 이내 & 강의 시작 하루 전까지 취소 가능.")
+  @Operation(summary = "수강 취소", description = "결제 전 언제든 취소 가능. 결제 후 7일 이내 & 강의 시작 하루 3일 전 까지 취소 가능.")
   public ResponseEntity<ResultResponse> cancelEnroll(
       @PathVariable Long userId,
       @PathVariable Long enrollmentId) {

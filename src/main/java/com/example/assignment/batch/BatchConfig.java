@@ -19,9 +19,10 @@ public class BatchConfig {
   private final Job cancelJob;
 
   /**
-   * 미결제 자동 취소 배치
-   * 매일 자정에 실행
-   * 강의 시작 하루 전까지 결제하지 않은 PENDING 건을 자동 취소
+   * 매일 자정 실행되는 수강신청 자동 처리 배치
+   * 1. 강의 시작 3일 전 OPEN/DRAFT 상태인 강의 자동 마감
+   * 2. 강의 시작 3일 전까지 미결제(PENDING) 건 자동 취소 + 대기자 승격
+   * 3. 강의 시작 3일 전까지 대기(WAITLISTED) 건 자동 취소
    */
   @Scheduled(cron = "0 0 0 * * *")
   public void cancelUnpaidBatch() {
