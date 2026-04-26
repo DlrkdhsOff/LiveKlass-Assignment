@@ -76,7 +76,7 @@ public class CancelUnpaidStepConfig {
    */
   @Bean
   public ItemReader<Enrollment> cancelUnpaidReader() {
-    LocalDate tomorrow = LocalDate.now().plusDays(1);
+    LocalDate tomorrow = LocalDate.now().plusDays(3);
     List<Enrollment> list = enrollmentRepository.findAllPendingBeforeCourseStart(tomorrow);
 
     return new ListItemReader<>(list);
