@@ -107,7 +107,7 @@ public class Enrollment extends BaseEntity {
           .isAfter(LocalDateTime.now());
 
       boolean beforeCourseStart = this.course.getStartPeriodAt()
-          .minusDays(1)
+          .minusDays(3)
           .isAfter(LocalDate.now());
 
       return withinDeadline && beforeCourseStart;
