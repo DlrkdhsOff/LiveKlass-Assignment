@@ -31,10 +31,10 @@ public class BatchConfig {
           .toJobParameters();
 
       jobLauncher.run(cancelJob, jobParameters);
-      log.info("[배치] 미결제 자동 취소 배치 실행 완료");
+      log.info("[배치] 배치 실행 완료");
 
     } catch (Exception e) {
-      log.error("[배치] 미결제 자동 취소 배치 실행 실패", e);
+      log.error("[배치] 배치 실행 실패", e);
     }
   }
 
