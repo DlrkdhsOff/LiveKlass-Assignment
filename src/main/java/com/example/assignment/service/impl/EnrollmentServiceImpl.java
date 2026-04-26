@@ -172,6 +172,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     Course course = getCourse(enrollment.getCourse().getCourseId());
 
+    if (enrollment.isConfirmed()) {
+      SaleRecord saleRecord = getSaleRecord(enrollmentId);
+      saleRecord.cancel();
+    }
+
     course.decreaseEnrollmentCnt();
     enrollment.cancel();
 
@@ -203,6 +208,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   private Enrollment getEnrollmentWithCourse(Long enrollmentId) {
     return enrollmentRepository.findByIdWithCourse(enrollmentId)
         .orElseThrow(() -> new GlobalException(FailedType.ENROLLMENT_NOT_FOUND));
+  }
+
+  private SaleRecord getSaleRecord(Long enrollmentId) {
+    return saleRecordRepository.findByEnrollment_EnrollmentId(enrollmentId)
+        .orElseThrow(() -> new GlobalException(FailedType.SALE_RECORD_NOT_FOUND));
   }
 
   private void promoteNextFromWaitlist(Course course) {
