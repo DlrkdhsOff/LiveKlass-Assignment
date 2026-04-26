@@ -44,7 +44,7 @@ public class CourseReq {
   @NotNull(message = "종료일을 입력해주세요")
   private LocalDate endPeriodAt;
 
-  @Schema(example = "DRAFT / OPEN / CLOSED")
+  @Schema(example = "OPEN")
   @NotNull(message = "강의 상태를 입력해주세요")
   private CourseStatus courseStatus;
 
