@@ -164,7 +164,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     course.decreaseEnrollmentCnt();
     enrollment.cancel();
-    promoteNextFromWaitlist(course);
+
+    if(course.isOpen()) {
+      promoteNextFromWaitlist(course);
+    }
 
     return ResultResponse.of(SuccessType.SUCCESS_CANCEL_ENROLLMENT);
   }
