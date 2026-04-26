@@ -46,7 +46,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
   @Query("""
     SELECT c FROM Course c
     WHERE c.courseStatus IN ('OPEN', 'DRAFT')
-      AND c.startPeriodAt <= :tomorrow
+      AND c.startPeriodAt <= :threeDaysLater
     """)
-  List<Course> findAllOpenOrDraftCoursesBeforeStart(@Param("tomorrow") LocalDate tomorrow);
+  List<Course> findAllOpenOrDraftCoursesBeforeStart(@Param("threeDaysLater") LocalDate threeDaysLater);
 }

@@ -71,8 +71,8 @@ public class CloseCourseStepConfig {
    */
   @Bean
   public ItemReader<Course> closeCourseReader() {
-    LocalDate tomorrow = LocalDate.now().plusDays(1);
-    List<Course> list = courseRepository.findAllOpenOrDraftCoursesBeforeStart(tomorrow);
+    LocalDate threeDaysLater = LocalDate.now().plusDays(3);
+    List<Course> list = courseRepository.findAllOpenOrDraftCoursesBeforeStart(threeDaysLater);
     return new ListItemReader<>(list);
   }
 
