@@ -4,6 +4,7 @@ import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.type.EnrollmentStatus;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +41,25 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     LIMIT 1
     """)
   Optional<Enrollment> findFirstWaitlistedByCourse(@Param("course") Course course);
+
+  @Query("""
+    SELECT e FROM Enrollment e
+    JOIN FETCH e.course
+    WHERE e.enrollmentId = :enrollmentId
+    """)
+  Optional<Enrollment> findByIdWithCourse(@Param("enrollmentId") Long enrollmentId);
+
+  @Query("""
+    SELECT e FROM Enrollment e
+    JOIN FETCH e.course
+    WHERE e.enrollmentStatus = :status
+      AND e.course.startPeriodAt <= :threeDaysLater
+    """)
+  List<Enrollment> findAllBeforeCourseStart(
+      @Param("threeDaysLater") LocalDate threeDaysLater,
+      @Param("status") EnrollmentStatus status
+      );
+
+
+
 }

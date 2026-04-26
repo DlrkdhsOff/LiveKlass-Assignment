@@ -20,10 +20,8 @@ spring:
     open-in-view: false
 
 
-  jackson:
-    time-zone: Asia/Seoul
-
-
-logging:
-  level:
-    com.example.notification: DEBUG
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always

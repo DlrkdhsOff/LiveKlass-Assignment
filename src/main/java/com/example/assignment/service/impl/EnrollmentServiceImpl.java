@@ -141,7 +141,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
   @Transactional
   public ResultResponse cancelEnrollment(Long userId, Long enrollmentId) {
 
-    Enrollment enrollment = getEnrollment(enrollmentId);
+    Enrollment enrollment = getEnrollmentWithCourse(enrollmentId);
 
     if (enrollment.isNotOwnedBy(userId)) {
       throw new GlobalException(FailedType.ACCESS_DENIED);
@@ -183,6 +183,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
   private Enrollment getEnrollment(Long enrollmentId) {
     return enrollmentRepository.findById(enrollmentId)
+        .orElseThrow(() -> new GlobalException(FailedType.ENROLLMENT_NOT_FOUND));
+  }
+
+  // course 포함 조회 (취소 시 사용)
+  private Enrollment getEnrollmentWithCourse(Long enrollmentId) {
+    return enrollmentRepository.findByIdWithCourse(enrollmentId)
         .orElseThrow(() -> new GlobalException(FailedType.ENROLLMENT_NOT_FOUND));
   }
 
