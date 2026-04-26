@@ -15,6 +15,7 @@ public class DailyJobConfig  {
   private final JobRepository jobRepository;
   private final Step cancelUnpaidStep;
   private final Step cancelWaitlistStep;
+  private final Step closeCourseStep;
 
   /**
    * 매일 자정 실행되는 수강신청 자동 취소 Job
@@ -24,7 +25,8 @@ public class DailyJobConfig  {
   @Bean
   public Job cancelJob() {
     return new JobBuilder("dailyCancelEnrollmentJob", jobRepository)
-        .start(cancelUnpaidStep)
+        .start(closeCourseStep)
+        .next(cancelUnpaidStep)
         .next(cancelWaitlistStep)
         .build();
   }
