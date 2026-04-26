@@ -400,9 +400,9 @@ QueryDSL 은 조건이 `null` 이면 해당 조건을 자동으로 제외하는 
 이를 방지하기 위해 조회 쿼리에 `JOIN FETCH` 를 적용하여 한 번의 쿼리로 필요한 데이터를 모두 가져오도록 처리함.
 
 ##
-### 8. 자동 취소 처리 — Spring Batch 도입
+### 8. 자동 처리 — Spring Batch 도입
 
-미결제 자동 취소와 대기열 만료 처리를 스케줄러 대신 Spring Batch 로 구현함.
+미결제 자동 취소, 대기열 만료 처리, 강의 자동 마감을 스케줄러 대신 Spring Batch 로 구현함.
 
 단순 `@Scheduled` 방식도 가능하지만, 수강생이 늘어날 경우를 고려해 아래와 같은 이유로 Spring Batch 를 선택함.
 
@@ -415,9 +415,12 @@ QueryDSL 은 조건이 `null` 이면 해당 조건을 자동으로 제외하는 
 매일 자정 실행
     ↓
 DailyJob
+    ├── closeCourseStep   : 강의 시작 하루 전 OPEN/DRAFT 상태인 강의 자동 마감
     ├── cancelUnpaidStep  : 강의 시작 하루 전까지 미결제(PENDING) 건 자동 취소 + 대기자 승격
     └── cancelWaitlistStep : 강의 시작 3일 전까지 대기(WAITLISTED) 건 자동 취소
 ```
+
+강의 마감을 먼저 처리한 후 미결제 취소 → 대기열 만료 순으로 실행하여 각 Step 이 올바른 강의 상태를 기준으로 동작하도록 함.
 
 ---
 
