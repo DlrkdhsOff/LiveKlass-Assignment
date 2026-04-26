@@ -188,15 +188,6 @@ public class CourseServiceImpl implements CourseService {
    * 동일 강사가 모든 필드가 같은 강의를 등록하는 경우 중복으로 판단
    */
   private boolean isDuplicateCourse(User user, CourseReq courseReq) {
-    return courseRepository.existsDuplicateCourse(
-        user,
-        courseReq.getTitle(),
-        courseReq.getDescription(),
-        courseReq.getAmount(),
-        courseReq.getPersonnel(),
-        courseReq.getStartPeriodAt(),
-        courseReq.getEndPeriodAt(),
-        courseReq.getCourseStatus()
-    );
+    return courseQueryRepository.existsDuplicateCourse(user, courseReq);
   }
 }

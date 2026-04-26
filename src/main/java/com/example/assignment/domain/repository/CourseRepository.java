@@ -16,29 +16,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-  @Query("""
-      SELECT COUNT(c) > 0
-      FROM Course c
-      WHERE c.user = :user
-        AND c.title = :title
-        AND c.description = :description
-        AND c.amount = :amount
-        AND c.personnel = :personnel
-        AND c.startPeriodAt = :startPeriodAt
-        AND c.endPeriodAt = :endPeriodAt
-        AND c.courseStatus = :courseStatus
-      """)
-  boolean existsDuplicateCourse(
-      @Param("user") User user,
-      @Param("title") String title,
-      @Param("description") String description,
-      @Param("amount") Long amount,
-      @Param("personnel") Long personnel,
-      @Param("startPeriodAt") LocalDate startPeriodAt,
-      @Param("endPeriodAt") LocalDate endPeriodAt,
-      @Param("courseStatus") CourseStatus courseStatus
-  );
-
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT c FROM Course c WHERE c.courseId = :courseId")
   Optional<Course> findByIdWithLock(@Param("courseId") Long courseId);
