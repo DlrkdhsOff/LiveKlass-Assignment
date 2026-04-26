@@ -52,18 +52,13 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
   @Query("""
     SELECT e FROM Enrollment e
     JOIN FETCH e.course
-    WHERE e.enrollmentStatus = 'PENDING'
-      AND e.course.startPeriodAt <= :tomorrow
-    """)
-  List<Enrollment> findAllPendingBeforeCourseStart(@Param("tomorrow") LocalDate tomorrow);
-
-  @Query("""
-    SELECT e FROM Enrollment e
-    JOIN FETCH e.course
-    WHERE e.enrollmentStatus = 'WAITLISTED'
+    WHERE e.enrollmentStatus = :status
       AND e.course.startPeriodAt <= :threeDaysLater
     """)
-  List<Enrollment> findAllWaitlistedBeforeCourseStart(@Param("threeDaysLater") LocalDate threeDaysLater);
+  List<Enrollment> findAllBeforeCourseStart(
+      @Param("threeDaysLater") LocalDate threeDaysLater,
+      @Param("status") EnrollmentStatus status
+      );
 
 
 

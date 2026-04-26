@@ -3,6 +3,7 @@ package com.example.assignment.batch.step;
 import com.example.assignment.batch.listener.CancelWaitlistStepListener;
 import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.repository.EnrollmentRepository;
+import com.example.assignment.domain.type.EnrollmentStatus;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -69,7 +70,10 @@ public class CancelWaitlistStepConfig  {
   @Bean
   public ItemReader<Enrollment> cancelWaitlistReader() {
     LocalDate threeDaysLater = LocalDate.now().plusDays(3);
-    List<Enrollment> list = enrollmentRepository.findAllWaitlistedBeforeCourseStart(threeDaysLater);
+    List<Enrollment> list = enrollmentRepository.findAllBeforeCourseStart(
+        threeDaysLater,
+        EnrollmentStatus.WAITLISTED
+    );
 
     return new ListItemReader<>(list);
   }

@@ -5,6 +5,7 @@ import com.example.assignment.domain.entity.Course;
 import com.example.assignment.domain.entity.Enrollment;
 import com.example.assignment.domain.repository.CourseRepository;
 import com.example.assignment.domain.repository.EnrollmentRepository;
+import com.example.assignment.domain.type.EnrollmentStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -76,8 +77,11 @@ public class CancelUnpaidStepConfig {
    */
   @Bean
   public ItemReader<Enrollment> cancelUnpaidReader() {
-    LocalDate tomorrow = LocalDate.now().plusDays(3);
-    List<Enrollment> list = enrollmentRepository.findAllPendingBeforeCourseStart(tomorrow);
+    LocalDate threeDaysLater = LocalDate.now().plusDays(3);
+    List<Enrollment> list = enrollmentRepository.findAllBeforeCourseStart(
+        threeDaysLater,
+        EnrollmentStatus.PENDING
+        );
 
     return new ListItemReader<>(list);
   }
