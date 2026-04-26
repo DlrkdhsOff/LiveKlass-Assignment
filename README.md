@@ -127,7 +127,7 @@ http://localhost:8080/swagger-ui/index.html
 - 수강 인원이 최대 정원에 도달하면 자동으로 모집 마감 처리되며, 취소가 발생하여 자리가 생기면 자동으로 모집 중으로 복귀
 - 수강 기간이 종료된 강의는 상태 변경 불가
 - 강의 상태 변경은 해당 강의를 개설한 강사 본인만 가능
-- 수강 시작 하루 전이라면 자동으로 모집 마감 처리가 되어 해당 강의 수강 신청 불가
+- 수강 시작 3일 전이라면 자동으로 모집 마감 처리가 되어 해당 강의 수강 신청 불가
 
 ### 수강 신청 정책
 
@@ -415,8 +415,8 @@ QueryDSL 은 조건이 `null` 이면 해당 조건을 자동으로 제외하는 
 매일 자정 실행
     ↓
 DailyJob
-    ├── closeCourseStep   : 강의 시작 하루 전 OPEN/DRAFT 상태인 강의 자동 마감
-    ├── cancelUnpaidStep  : 강의 시작 하루 전까지 미결제(PENDING) 건 자동 취소 + 대기자 승격
+    ├── closeCourseStep   : 강의 시작 3일 전 OPEN/DRAFT 상태인 강의 자동 마감
+    ├── cancelUnpaidStep  : 강의 시작 3일 전까지 미결제(PENDING) 건 자동 취소 + 대기자 승격
     └── cancelWaitlistStep : 강의 시작 3일 전까지 대기(WAITLISTED) 건 자동 취소
 ```
 
