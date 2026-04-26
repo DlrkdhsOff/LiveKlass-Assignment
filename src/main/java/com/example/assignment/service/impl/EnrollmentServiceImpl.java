@@ -133,9 +133,9 @@ public class EnrollmentServiceImpl implements EnrollmentService {
    * - 본인 수강 신청 건만 취소 가능
    * - 이미 취소된 건은 재취소 불가
    * - PENDING, WAITLISTED 는 언제든 취소 가능
-   * - CONFIRMED 는 결제 후 7일 이내만 취소 가능
-   * - WAITLISTED 취소 시 정원 복구 없이 상태만 변경
-   * - PENDING, CONFIRMED 취소 시 정원 복구 후 대기자 자동 승격
+   * - CONFIRMED 는 결제 후 7일 이내 AND 강의 시작 하루 전까지 두 조건 모두 만족 시 취소 가능
+   * - WAITLISTED 취소 시 정원을 차지하지 않으므로 정원 복구 없이 상태만 변경
+   * - PENDING, CONFIRMED 취소 시 정원 복구 후 강의가 OPEN 상태인 경우에만 대기자 자동 승격
    */
   @Override
   @Transactional

@@ -18,9 +18,10 @@ public class DailyJobConfig  {
   private final Step closeCourseStep;
 
   /**
-   * 매일 자정 실행되는 수강신청 자동 취소 Job
-   * 1. cancelUnpaidStep  : 강의 시작 하루 전까지 미결제(PENDING) 건 자동 취소
-   * 2. cancelWaitlistStep : 강의 시작 3일 전까지 대기(WAITLISTED) 건 자동 취소
+   * 매일 자정 실행되는 수강신청 자동 처리 Job
+   * 1. closeCourseStep    : 강의 시작 3일 전 OPEN/DRAFT 상태인 강의 자동 마감
+   * 2. cancelUnpaidStep   : 강의 시작 3일 전까지 미결제(PENDING) 건 자동 취소 + 대기자 승격
+   * 3. cancelWaitlistStep : 강의 시작 3일 전까지 대기(WAITLISTED) 건 자동 취소
    */
   @Bean
   public Job cancelJob() {
