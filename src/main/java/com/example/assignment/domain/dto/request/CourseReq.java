@@ -27,6 +27,7 @@ public class CourseReq {
 
   @Schema(example = "50000")
   @NotNull(message = "강의 가격을 입력해주세요.")
+  @Min(value = 0, message = "강의 가격은 0원 이상이어야 합니다.")
   private Long amount;
 
   @Schema(example = "30")
