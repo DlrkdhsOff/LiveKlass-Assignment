@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CourseStatusReq {
 
-  @Schema(example = "DRAFT / OPEN / CLOSED")
+  @Schema(example = "OPEN")
   @NotNull(message = "변경할 강의 상태를 입력해주세요.")
   private CourseStatus courseStatus;
 }

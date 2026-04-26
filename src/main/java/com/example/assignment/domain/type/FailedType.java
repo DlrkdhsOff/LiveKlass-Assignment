@@ -34,6 +34,7 @@ public enum FailedType {
   ALREADY_PAID(HttpStatus.CONFLICT, "이미 결제가 완료된 수강신청입니다."),
   ALREADY_CANCELLED(HttpStatus.BAD_REQUEST, "이미 취소된 수강신청입니다."),
   WAITLISTED_CANNOT_PAY(HttpStatus.BAD_REQUEST, "대기 중인 수강신청은 결제할 수 없습니다."),
+  SALE_RECORD_NOT_FOUND(HttpStatus.NOT_FOUND, "정산내역을 찾을 수 없습니다."),
 
   // =================== 전역 예외 ===================
   INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 입력값입니다."),
