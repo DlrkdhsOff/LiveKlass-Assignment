@@ -30,7 +30,7 @@ public class CourseSearchReq {
   @Schema(example = "2026-07-31")
   private LocalDate endPeriodAt;
 
-  @Schema(example = "DRAFT / OPEN / CLOSED")
+  @Schema(example = "OPEN")
   private CourseStatus courseStatus;
 
 }
