@@ -149,7 +149,7 @@ public class Course extends BaseEntity {
    * 수강 인원 감소
    * 수강 취소 시 호출
    * CLOSED 상태에서 자리가 생기면 자동으로 OPEN 으로 복귀
-   * 단, 강의 시작 하루 전인 경우에는 OPEN 으로 복귀하지 않음
+   * 단, 강의 시작 3일 전인 경우에는 OPEN 으로 복귀하지 않음
    */
   public void decreaseEnrollmentCnt() {
     if (this.enrollmentCnt > 0) {
@@ -157,7 +157,7 @@ public class Course extends BaseEntity {
     }
     if (this.courseStatus == CourseStatus.CLOSED
         && !this.isFull()
-        && this.startPeriodAt.isAfter(LocalDate.now().plusDays(1))) {
+        && this.startPeriodAt.isAfter(LocalDate.now().plusDays(3))) {
       this.courseStatus = CourseStatus.OPEN;
     }
   }
