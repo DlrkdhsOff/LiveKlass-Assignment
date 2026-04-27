@@ -23,6 +23,9 @@ public enum SuccessType {
 
   // =================== 결제 ===================
   SUCCESS_PAYMENT(HttpStatus.OK, "결제가 완료되었습니다."),
+
+  // =================== 정산 ===================
+  SUCCESS_GET_SETTLEMENT(HttpStatus.OK, "정산 내역 조회에 성공했습니다."),
   ;
 
   private final HttpStatus status;

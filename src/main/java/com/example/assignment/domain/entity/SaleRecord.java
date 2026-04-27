@@ -29,6 +29,10 @@ public class SaleRecord extends BaseEntity {
   @JoinColumn(name = "enrollment_id", nullable = false)
   private Enrollment enrollment;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
   private Long amount;
 
   private Long refundAmount;
@@ -36,6 +40,7 @@ public class SaleRecord extends BaseEntity {
   public static SaleRecord toEntity(Enrollment enrollment) {
     return SaleRecord.builder()
         .enrollment(enrollment)
+        .user(enrollment.getCourse().getUser())
         .amount(enrollment.getCourse().getAmount())
         .build();
   }

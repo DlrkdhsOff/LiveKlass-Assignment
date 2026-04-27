@@ -14,7 +14,7 @@ import com.example.assignment.domain.entity.User;
 import com.example.assignment.domain.repository.CourseRepository;
 import com.example.assignment.domain.repository.EnrollmentRepository;
 import com.example.assignment.domain.repository.UserRepository;
-import com.example.assignment.domain.repository.querydsl.CourseQueryRepository;
+import com.example.assignment.domain.repository.querydsl.CourseQuery;
 import com.example.assignment.domain.type.CourseStatus;
 import com.example.assignment.domain.type.FailedType;
 import com.example.assignment.domain.type.SuccessType;
@@ -31,7 +31,7 @@ public class CourseServiceImpl implements CourseService {
 
   private final UserRepository userRepository;
   private final CourseRepository courseRepository;
-  private final CourseQueryRepository courseQueryRepository;
+  private final CourseQuery courseQuery;
   private final EnrollmentRepository enrollmentRepository;
 
   /**
@@ -64,7 +64,7 @@ public class CourseServiceImpl implements CourseService {
   @Transactional(readOnly = true)
   public ResultResponse getCourses(CourseSearchReq searchReq, int page) {
 
-    List<Course> courses = courseQueryRepository.searchCourses(searchReq);
+    List<Course> courses = courseQuery.searchCourses(searchReq);
 
     PageResponse<CoursePageRes> response = CoursePageRes.toList(courses, page);
 
@@ -187,6 +187,6 @@ public class CourseServiceImpl implements CourseService {
    * 동일 강사가 모든 필드가 같은 강의를 등록하는 경우 중복으로 판단
    */
   private boolean isDuplicateCourse(User user, CourseReq courseReq) {
-    return courseQueryRepository.existsDuplicateCourse(user, courseReq);
+    return courseQuery.existsDuplicateCourse(user, courseReq);
   }
 }

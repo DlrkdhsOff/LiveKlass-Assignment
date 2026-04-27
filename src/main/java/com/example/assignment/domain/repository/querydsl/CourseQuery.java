@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class CourseQueryRepository {
+public class CourseQuery {
 
   private final JPAQueryFactory queryFactory;
 

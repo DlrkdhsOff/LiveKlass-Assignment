@@ -38,6 +38,10 @@ public enum FailedType {
 
   // =================== 전역 예외 ===================
   INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "올바르지 않은 입력값입니다."),
+
+  // =================== 정산 ===================
+  INVALID_YEAR_MONTH(HttpStatus.BAD_REQUEST, "오늘 또는 이전 날짜를 선택해주세요."),
+  INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (예: 2026-01)"),
   ;
 
   private final HttpStatus status;
