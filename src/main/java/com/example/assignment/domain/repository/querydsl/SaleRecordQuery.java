@@ -1,11 +1,14 @@
 package com.example.assignment.domain.repository.querydsl;
 
+import com.example.assignment.domain.dto.response.AdminSettlementRes;
 import com.example.assignment.domain.dto.response.SettlementSummary;
 import com.example.assignment.domain.entity.QSaleRecord;
 import com.example.assignment.domain.entity.User;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -35,6 +38,30 @@ public class SaleRecordQuery {
             saleRecord.createdAt.between(start, end)
         )
         .fetchOne();
+  }
+
+
+  public List<AdminSettlementRes> getAdminSettlement(LocalDate startAt, LocalDate endAt) {
+    QSaleRecord saleRecord = QSaleRecord.saleRecord;
+
+    LocalDateTime start = startAt.atStartOfDay();
+    LocalDateTime end = endAt.atTime(23, 59, 59);
+
+    return queryFactory
+        .select(Projections.constructor(AdminSettlementRes.class,
+            saleRecord.user.userId,
+            saleRecord.user.name,
+            saleRecord.amount.sum(),
+            saleRecord.refundAmount.sum()
+        ))
+        .from(saleRecord)
+        .join(saleRecord.user)
+        .where(
+            saleRecord.createdAt.between(start, end)
+        )
+        .groupBy(saleRecord.user.userId, saleRecord.user.name)
+        .orderBy(saleRecord.user.userId.asc())
+        .fetch();
   }
 
 }
