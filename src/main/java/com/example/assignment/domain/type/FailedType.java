@@ -42,6 +42,7 @@ public enum FailedType {
   // =================== 정산 ===================
   INVALID_YEAR_MONTH(HttpStatus.BAD_REQUEST, "오늘 또는 이전 날짜를 선택해주세요."),
   INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (예: 2026-01)"),
+  INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "시작일은 종료일보다 늦을 수 없습니다."),
   ;
 
   private final HttpStatus status;
