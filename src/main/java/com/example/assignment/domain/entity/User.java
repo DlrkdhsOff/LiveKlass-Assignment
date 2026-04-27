@@ -35,4 +35,8 @@ public class User {
   public boolean isCreator() {
     return userRole == UserRole.CREATORS;
   }
+
+  public boolean isAdmin() {
+    return userRole == UserRole.ADMIN;
+  }
 }
