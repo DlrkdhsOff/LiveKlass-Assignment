@@ -1,6 +1,6 @@
-package com.example.assignment.domain.dto.response;
+package com.example.assignment.creator.dto.response;
 
-import com.example.assignment.domain.entity.Settlement;
+import com.example.assignment.creator.entity.Settlement;
 import java.text.NumberFormat;
 import java.util.Locale;
 import lombok.AllArgsConstructor;
@@ -13,8 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SettlementRes {
-
-  private static final NumberFormat FORMAT = NumberFormat.getInstance(Locale.KOREA);
 
   private Long settlementId;
 
@@ -34,7 +32,6 @@ public class SettlementRes {
 
   private String cancelCount;         // 취소 건수
 
-
   private String settlementStatus;
 
   private String settlementMonth;
@@ -44,11 +41,11 @@ public class SettlementRes {
     return SettlementRes.builder()
         .settlementId(settlement.getSettlementId())
         .userId(settlement.getUser().getUserId())
-        .totalAmount(FORMAT.format(settlement.getTotalAmount()) + "원")
-        .refundAmount(FORMAT.format(settlement.getRefundAmount()) + "원")
-        .netAmount(FORMAT.format(settlement.getNetAmount()) + "원")
-        .commission(FORMAT.format(settlement.getCommission()) + "원")
-        .settlementAmount(FORMAT.format(settlement.getSettlementAmount()) + "원")
+        .totalAmount(String.format("%,d원", settlement.getTotalAmount()))
+        .refundAmount(String.format("%,d원", settlement.getRefundAmount()))
+        .netAmount(String.format("%,d원", settlement.getNetAmount()))
+        .commission(String.format("%,d원", settlement.getCommission()))
+        .settlementAmount(String.format("%,d원", settlement.getSettlementAmount()))
         .saleCount(settlement.getSaleCount() + "건")
         .cancelCount(settlement.getCancelCount() + "건")
         .settlementStatus(settlement.getSettlementStatus().getValue())

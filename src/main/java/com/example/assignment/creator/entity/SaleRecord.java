@@ -1,6 +1,8 @@
-package com.example.assignment.domain.entity;
+package com.example.assignment.creator.entity;
 
-import com.example.assignment.domain.type.EnrollmentStatus;
+import com.example.assignment.common.entity.BaseEntity;
+import com.example.assignment.common.entity.User;
+import com.example.assignment.student.entity.Enrollment;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

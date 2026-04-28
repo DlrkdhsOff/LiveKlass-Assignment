@@ -1,9 +1,9 @@
 package com.example.assignment.batch.step;
 
 import com.example.assignment.batch.listener.CancelWaitlistStepListener;
-import com.example.assignment.domain.entity.Enrollment;
-import com.example.assignment.domain.repository.EnrollmentRepository;
-import com.example.assignment.domain.type.EnrollmentStatus;
+import com.example.assignment.student.entity.Enrollment;
+import com.example.assignment.student.repository.EnrollmentRepository;
+import com.example.assignment.student.type.EnrollmentStatus;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

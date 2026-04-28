@@ -1,18 +1,21 @@
-package com.example.assignment.domain.repository.querydsl;
+package com.example.assignment.creator.repository.querydsl;
 
-import com.example.assignment.domain.dto.request.CourseReq;
-import com.example.assignment.domain.dto.request.CourseSearchReq;
-import com.example.assignment.domain.entity.Course;
-import com.example.assignment.domain.entity.QCourse;
-import com.example.assignment.domain.entity.User;
-import com.example.assignment.domain.type.CourseStatus;
-import com.example.assignment.domain.type.UserRole;
+import com.example.assignment.common.entity.User;
+import com.example.assignment.common.type.UserRole;
+import com.example.assignment.creator.dto.request.CourseReq;
+import com.example.assignment.creator.dto.request.CourseSearchReq;
+import com.example.assignment.creator.entity.Course;
+import com.example.assignment.creator.entity.QCourse;
+import com.example.assignment.creator.type.CourseStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -26,10 +29,10 @@ public class CourseQuery {
    * 강의 목록 동적 조회
    * 조건이 null 이면 해당 조건은 자동으로 제외됨
    */
-  public List<Course> searchCourses(CourseSearchReq searchReq) {
+  public Page<Course> searchCourses(CourseSearchReq searchReq, Pageable pageable) {
     QCourse course = QCourse.course;
 
-    return queryFactory
+    List<Course> content = queryFactory
         .selectFrom(course)
         .leftJoin(course.user).fetchJoin()
         .where(
@@ -48,7 +51,25 @@ public class CourseQuery {
                 .otherwise(3).asc(),
             course.startPeriodAt.asc()
         )
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
         .fetch();
+
+    Long total = queryFactory
+        .select(course.count())
+        .from(course)
+        .where(
+            creatorNameEq(course, searchReq.getCreatorName()),
+            titleContains(course, searchReq.getTitle()),
+            amountGoe(course, searchReq.getMinAmount()),
+            amountLoe(course, searchReq.getMaxAmount()),
+            startPeriodAtGoe(course, searchReq.getStartPeriodAt()),
+            endPeriodAtLoe(course, searchReq.getEndPeriodAt()),
+            courseStatusEq(course, searchReq.getCourseStatus())
+        )
+        .fetchOne();
+
+    return new PageImpl<>(content, pageable, total == null ? 0 : total);
   }
 
   /**

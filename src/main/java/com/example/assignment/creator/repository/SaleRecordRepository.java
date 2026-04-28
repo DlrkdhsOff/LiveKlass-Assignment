@@ -1,6 +1,6 @@
-package com.example.assignment.domain.repository;
+package com.example.assignment.creator.repository;
 
-import com.example.assignment.domain.entity.SaleRecord;
+import com.example.assignment.creator.entity.SaleRecord;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

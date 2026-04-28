@@ -1,15 +1,18 @@
-package com.example.assignment.domain.repository.querydsl;
+package com.example.assignment.creator.repository.querydsl;
 
-import com.example.assignment.domain.dto.response.AdminSettlementRes;
-import com.example.assignment.domain.dto.response.SettlementSummary;
-import com.example.assignment.domain.entity.QSaleRecord;
-import com.example.assignment.domain.entity.User;
+import com.example.assignment.admin.dto.AdminSettlementRes;
+import com.example.assignment.common.entity.User;
+import com.example.assignment.creator.dto.response.SettlementSummary;
+import com.example.assignment.creator.entity.QSaleRecord;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,13 +44,13 @@ public class SaleRecordQuery {
   }
 
 
-  public List<AdminSettlementRes> getAdminSettlement(LocalDate startAt, LocalDate endAt) {
+  public Page<AdminSettlementRes> getAdminSettlement(LocalDate startAt, LocalDate endAt, Pageable pageable) {
     QSaleRecord saleRecord = QSaleRecord.saleRecord;
 
     LocalDateTime start = startAt.atStartOfDay();
     LocalDateTime end = endAt.atTime(23, 59, 59);
 
-    return queryFactory
+    List<AdminSettlementRes> content = queryFactory
         .select(Projections.constructor(AdminSettlementRes.class,
             saleRecord.user.userId,
             saleRecord.user.name,
@@ -61,7 +64,19 @@ public class SaleRecordQuery {
         )
         .groupBy(saleRecord.user.userId, saleRecord.user.name)
         .orderBy(saleRecord.user.userId.asc())
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
         .fetch();
+
+    Long total = queryFactory
+        .select(saleRecord.user.userId.countDistinct())
+        .from(saleRecord)
+        .where(
+            saleRecord.createdAt.between(start, end)
+        )
+        .fetchOne();
+
+    return new PageImpl<>(content, pageable, total == null ? 0 : total);
   }
 
 }

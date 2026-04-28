@@ -1,7 +1,9 @@
-package com.example.assignment.domain.entity;
+package com.example.assignment.creator.entity;
 
-import com.example.assignment.domain.dto.request.CourseReq;
-import com.example.assignment.domain.type.CourseStatus;
+import com.example.assignment.common.entity.BaseEntity;
+import com.example.assignment.common.entity.User;
+import com.example.assignment.creator.dto.request.CourseReq;
+import com.example.assignment.creator.type.CourseStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

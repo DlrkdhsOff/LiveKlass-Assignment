@@ -1,8 +1,8 @@
 package com.example.assignment.batch.step;
 
 import com.example.assignment.batch.listener.CloseCourseStepListener;
-import com.example.assignment.domain.entity.Course;
-import com.example.assignment.domain.repository.CourseRepository;
+import com.example.assignment.creator.entity.Course;
+import com.example.assignment.creator.repository.CourseRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

@@ -1,18 +1,15 @@
-package com.example.assignment.controller;
+package com.example.assignment.creator.controller;
 
-import com.example.assignment.domain.dto.ResultResponse;
-import com.example.assignment.domain.dto.request.CourseReq;
-import com.example.assignment.domain.dto.request.CourseSearchReq;
-import com.example.assignment.domain.dto.request.CourseStatusReq;
-import com.example.assignment.service.CourseService;
+import com.example.assignment.common.dto.ResultResponse;
+import com.example.assignment.creator.dto.request.CourseReq;
+import com.example.assignment.creator.dto.request.CourseStatusReq;
+import com.example.assignment.creator.service.CreatorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "강의 API", description = "강의 등록, 조회, 상태 변경, 수강생 목록 조회")
+@Tag(name = "강사 API", description = "정산 집계 내역 조회")
 @RestController
-@RequestMapping("/api/v1/course")
+@RequestMapping("/api/v1/creator")
 @RequiredArgsConstructor
-public class CourseController {
+public class CreatorController {
 
-  private final CourseService courseService;
+  private final CreatorService creatorService;
 
   /**
    * 강의 등록
@@ -39,38 +36,7 @@ public class CourseController {
   @Operation(summary = "강의 등록", description = "강사 전용. 동일한 강의 중복 등록 불가.")
   public ResponseEntity<ResultResponse> register(@RequestBody @Valid CourseReq courseReq) {
 
-    ResultResponse response = courseService.register(courseReq);
-    return new ResponseEntity<>(response, response.getStatus());
-  }
-
-  /**
-   * 강의 목록 조회
-   * GET /api/v1/course
-   * - 모든 조건은 선택값 (없으면 전체 조회)
-   * - 강사명, 제목, 가격 범위, 기간, 상태로 필터링 가능
-   * - 페이지네이션 적용 (기본 1페이지)
-   */
-  @GetMapping
-  @Operation(summary = "강의 목록 조회", description = "모든 조건은 선택값. 강사명, 제목, 가격 범위, 기간, 상태로 필터링 가능.")
-  public ResponseEntity<ResultResponse> getCourses(
-      @ParameterObject @ModelAttribute CourseSearchReq searchReq,
-      @RequestParam(defaultValue = "1") int page) {
-
-    ResultResponse response = courseService.getCourses(searchReq, page);
-
-    return new ResponseEntity<>(response, response.getStatus());
-  }
-
-  /**
-   * 강의 상세 조회
-   * GET /api/v1/course/{courseId}
-   * - 현재 수강 신청 인원 포함
-   */
-  @GetMapping("/{courseId}")
-  @Operation(summary = "강의 상세 조회", description = "현재 수강 신청 인원 포함.")
-  public ResponseEntity<ResultResponse> getCourseDetail(@PathVariable Long courseId) {
-
-    ResultResponse response = courseService.getCourseDetail(courseId);
+    ResultResponse response = creatorService.register(courseReq);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
@@ -89,7 +55,7 @@ public class CourseController {
       @PathVariable Long courseId,
       @RequestBody @Valid CourseStatusReq courseStatusReq) {
 
-    ResultResponse response = courseService.updateCourseStatus(userId, courseId, courseStatusReq);
+    ResultResponse response = creatorService.updateCourseStatus(userId, courseId, courseStatusReq);
     return new ResponseEntity<>(response, response.getStatus());
   }
 
@@ -99,14 +65,24 @@ public class CourseController {
    * - 강사 전용 (본인 강의만 조회 가능)
    * - 최신순 정렬, 페이지네이션 적용
    */
-  @GetMapping("/{userId}/{courseId}/enrollments")
+  @GetMapping("/{userId}/enrollments")
   @Operation(summary = "강의별 수강생 목록 조회", description = "강사 전용. 본인 강의만 조회 가능. 최신순 정렬.")
   public ResponseEntity<ResultResponse> getCourseEnrollments(
       @PathVariable Long userId,
-      @PathVariable Long courseId,
       @RequestParam(defaultValue = "1") int page) {
 
-    ResultResponse response = courseService.getCourseEnrollments(userId, courseId, page);
+    ResultResponse response = creatorService.getCourseEnrollments(userId, page);
     return new ResponseEntity<>(response, response.getStatus());
   }
+
+  @GetMapping("/{userId}/sale")
+  @Operation(summary = "월 별 정산 집계 내역 조회", description = "기간, 상태로 필터링 가능.")
+  public ResponseEntity<ResultResponse> getSaleRecord(
+      @PathVariable Long userId,
+      @RequestParam(required = false) String yearMonth) {
+
+    ResultResponse response = creatorService.getSaleRecord(userId, yearMonth);
+    return new ResponseEntity<>(response, response.getStatus());
+  }
+
 }

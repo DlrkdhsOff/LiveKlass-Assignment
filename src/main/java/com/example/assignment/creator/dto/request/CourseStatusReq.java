@@ -1,6 +1,6 @@
-package com.example.assignment.domain.dto.request;
+package com.example.assignment.creator.dto.request;
 
-import com.example.assignment.domain.type.CourseStatus;
+import com.example.assignment.creator.type.CourseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

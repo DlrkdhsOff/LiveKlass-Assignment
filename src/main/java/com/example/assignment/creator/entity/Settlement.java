@@ -1,7 +1,8 @@
-package com.example.assignment.domain.entity;
+package com.example.assignment.creator.entity;
 
-import com.example.assignment.domain.dto.response.SettlementSummary;
-import com.example.assignment.domain.type.SettlementStatus;
+import com.example.assignment.common.entity.User;
+import com.example.assignment.creator.dto.response.SettlementSummary;
+import com.example.assignment.creator.type.SettlementStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

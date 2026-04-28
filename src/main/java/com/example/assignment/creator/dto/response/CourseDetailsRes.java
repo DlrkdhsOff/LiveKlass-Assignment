@@ -1,6 +1,6 @@
-package com.example.assignment.domain.dto.response;
+package com.example.assignment.creator.dto.response;
 
-import com.example.assignment.domain.entity.Course;
+import com.example.assignment.creator.entity.Course;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseRes {
+public class CourseDetailsRes {
 
   private Long courseId;
 
@@ -30,8 +30,8 @@ public class CourseRes {
 
   private String enrollmentRatio;
 
-  public static CourseRes of(Course course) {
-    return new CourseRes(
+  public static CourseDetailsRes of(Course course) {
+    return new CourseDetailsRes(
         course.getCourseId(),
         course.getTitle(),
         course.getDescription(),
