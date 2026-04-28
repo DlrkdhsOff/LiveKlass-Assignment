@@ -1,7 +1,7 @@
-package com.example.assignment.controller;
+package com.example.assignment.admin.controller;
 
-import com.example.assignment.domain.dto.ResultResponse;
-import com.example.assignment.service.AdminService;
+import com.example.assignment.admin.service.AdminService;
+import com.example.assignment.common.dto.ResultResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;

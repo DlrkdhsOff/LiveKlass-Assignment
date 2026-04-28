@@ -1,6 +1,6 @@
-package com.example.assignment.service;
+package com.example.assignment.admin.service;
 
-import com.example.assignment.domain.dto.ResultResponse;
+import com.example.assignment.common.dto.ResultResponse;
 import java.time.LocalDate;
 
 public interface AdminService {

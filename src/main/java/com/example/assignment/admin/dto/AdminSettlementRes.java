@@ -1,4 +1,4 @@
-package com.example.assignment.domain.dto.response;
+package com.example.assignment.admin.dto;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class AdminSettlementRes {
-
-  private static final NumberFormat FORMAT = NumberFormat.getInstance(Locale.KOREA);
 
   private Long creatorId;
   private String creatorName;
@@ -35,8 +33,8 @@ public class AdminSettlementRes {
     this.rawTotalAmount      = net;
     this.rawCommission       = comm;
     this.rawSettlementAmount = settle;
-    this.totalAmount         = FORMAT.format(net) + "원";
-    this.commission          = FORMAT.format(comm) + "원";
-    this.settlementAmount    = FORMAT.format(settle) + "원";
+    this.totalAmount         = String.format("%,d원", net);
+    this.commission          = String.format("%,d원", comm);
+    this.settlementAmount    = String.format("%,d원", settle);
   }
 }
