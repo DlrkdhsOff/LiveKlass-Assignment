@@ -697,3 +697,8 @@ INSERT INTO enrollment (course_id, user_id, enrollment_status, created_at, updat
 - 모든 코드 작성 및 수정
 - 설계 방향 및 정책 최종 결정
 - 디버깅 및 테스트
+
+---
+## 추가 과제
+
+- 과제 B 브랜치: `assignment-b`
