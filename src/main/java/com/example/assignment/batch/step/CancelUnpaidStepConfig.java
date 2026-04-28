@@ -1,11 +1,11 @@
 package com.example.assignment.batch.step;
 
 import com.example.assignment.batch.listener.CancelUnpaidStepListener;
-import com.example.assignment.domain.entity.Course;
-import com.example.assignment.domain.entity.Enrollment;
-import com.example.assignment.domain.repository.CourseRepository;
-import com.example.assignment.domain.repository.EnrollmentRepository;
-import com.example.assignment.domain.type.EnrollmentStatus;
+import com.example.assignment.creator.entity.Course;
+import com.example.assignment.creator.repository.CourseRepository;
+import com.example.assignment.student.entity.Enrollment;
+import com.example.assignment.student.repository.EnrollmentRepository;
+import com.example.assignment.student.type.EnrollmentStatus;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
