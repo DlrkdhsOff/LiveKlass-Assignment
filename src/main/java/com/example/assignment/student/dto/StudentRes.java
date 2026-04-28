@@ -1,7 +1,7 @@
-package com.example.assignment.domain.dto.response;
+package com.example.assignment.student.dto;
 
 
-import com.example.assignment.domain.entity.Enrollment;
+import com.example.assignment.student.entity.Enrollment;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EnrollmentStudentRes {
+public class StudentRes {
 
   private String studentName;
 
   private String enrollmentStatus;
 
-  public static List<EnrollmentStudentRes> toList(List<Enrollment> list) {
+  public static List<StudentRes> toList(List<Enrollment> list) {
     return list.stream()
         .map(enrollment ->
-            new EnrollmentStudentRes(
+            new StudentRes(
                 enrollment.getUser().getName(),
                 enrollment.getEnrollmentStatus().getValue()
             ))

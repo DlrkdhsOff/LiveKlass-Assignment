@@ -1,7 +1,7 @@
-package com.example.assignment.controller;
+package com.example.assignment.student.controller;
 
-import com.example.assignment.domain.dto.ResultResponse;
-import com.example.assignment.service.EnrollmentService;
+import com.example.assignment.common.dto.ResultResponse;
+import com.example.assignment.student.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
