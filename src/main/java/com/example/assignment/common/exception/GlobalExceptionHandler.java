@@ -1,13 +1,14 @@
-package com.example.assignment.exception;
+package com.example.assignment.common.exception;
 
-import com.example.assignment.domain.dto.ResultResponse;
-import com.example.assignment.domain.type.FailedType;
+import com.example.assignment.common.dto.ResultResponse;
+import com.example.assignment.common.type.FailedType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
         .getFirst()
         .getDefaultMessage();
     ResultResponse resultResponse = new ResultResponse(HttpStatus.BAD_REQUEST, message);
-    return new ResponseEntity<>(resultResponse, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(resultResponse, resultResponse.getStatus());
   }
 
   // 유효하지 않은 Enum 값 처리 (ex. DRAFT, OPEN, CLOSED 외의 값)
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ResultResponse> handleHttpMessageNotReadable() {
 
     ResultResponse resultResponse = ResultResponse.of(FailedType.INVALID_INPUT_VALUE);
-    return new ResponseEntity<>(resultResponse, HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(resultResponse, resultResponse.getStatus());
+  }
+
+  @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ResultResponse> handleMethodArgumentTypeMismatch(
+      MethodArgumentTypeMismatchException e) {
+
+    ResultResponse resultResponse = ResultResponse.of(FailedType.INVALID_DATE_FORMAT);
+    return new ResponseEntity<>(resultResponse, resultResponse.getStatus());
   }
 }

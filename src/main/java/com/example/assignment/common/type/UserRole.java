@@ -1,4 +1,4 @@
-package com.example.assignment.domain.type;
+package com.example.assignment.common.type;
 
 public enum UserRole {
 

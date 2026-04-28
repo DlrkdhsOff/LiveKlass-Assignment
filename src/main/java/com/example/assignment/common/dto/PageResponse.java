@@ -1,4 +1,4 @@
-package com.example.assignment.domain.dto;
+package com.example.assignment.common.dto;
 
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,6 @@ public class PageResponse<T> {
   private int totalPage;   // 총 페이지 수
   private Long totalData;  // 전체 데이터 개수
   private List<T> dataList; // 현재 페이지의 데이터 리스트
-
   /**
    * 리스트 데이터를 페이징 처리하여 PageResponse로 변환
    *

@@ -1,6 +1,6 @@
-package com.example.assignment.domain.entity;
+package com.example.assignment.common.entity;
 
-import com.example.assignment.domain.type.UserRole;
+import com.example.assignment.common.type.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

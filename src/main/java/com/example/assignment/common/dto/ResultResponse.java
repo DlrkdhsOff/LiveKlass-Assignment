@@ -1,7 +1,7 @@
-package com.example.assignment.domain.dto;
+package com.example.assignment.common.dto;
 
-import com.example.assignment.domain.type.FailedType;
-import com.example.assignment.domain.type.SuccessType;
+import com.example.assignment.common.type.FailedType;
+import com.example.assignment.common.type.SuccessType;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

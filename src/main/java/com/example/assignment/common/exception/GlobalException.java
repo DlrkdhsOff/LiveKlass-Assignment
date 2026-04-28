@@ -1,7 +1,7 @@
-package com.example.assignment.exception;
+package com.example.assignment.common.exception;
 
-import com.example.assignment.domain.dto.ResultResponse;
-import com.example.assignment.domain.type.FailedType;
+import com.example.assignment.common.dto.ResultResponse;
+import com.example.assignment.common.type.FailedType;
 import lombok.Getter;
 
 @Getter

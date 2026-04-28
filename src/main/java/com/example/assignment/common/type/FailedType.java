@@ -1,4 +1,4 @@
-package com.example.assignment.domain.type;
+package com.example.assignment.common.type;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,6 +19,7 @@ public enum FailedType {
   COURSE_IS_FULL(HttpStatus.BAD_REQUEST, "수강 정원이 마감되었습니다."),
   COURSE_ALREADY_STARTED(HttpStatus.BAD_REQUEST, "이미 시작된 강의는 신청할 수 없습니다."),
   COURSE_PERIOD_EXPIRED(HttpStatus.BAD_REQUEST, "수강 기간이 종료된 강의입니다."),
+  COURSE_NOT_REGISTERED(HttpStatus.BAD_REQUEST, "등록된 강의가 없습니다."),
 
   // =================== 강의 상태 변경 ===================
   COURSE_ALREADY_OPEN(HttpStatus.BAD_REQUEST, "이미 모집 중인 강의입니다."),
@@ -41,7 +42,8 @@ public enum FailedType {
 
   // =================== 정산 ===================
   INVALID_YEAR_MONTH(HttpStatus.BAD_REQUEST, "오늘 또는 이전 날짜를 선택해주세요."),
-  INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (예: 2026-01)"),
+  INVALID_DATE_FORMAT(HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (예: 2026-01-01)"),
+  INVALID_DATE_YEAR_MONTH_FORMAT(HttpStatus.BAD_REQUEST, "날짜 형식이 올바르지 않습니다. (예: 2026-01)"),
   INVALID_DATE_RANGE(HttpStatus.BAD_REQUEST, "시작일은 종료일보다 늦을 수 없습니다."),
   ;
 

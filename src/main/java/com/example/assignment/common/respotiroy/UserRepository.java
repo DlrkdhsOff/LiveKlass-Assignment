@@ -1,6 +1,6 @@
-package com.example.assignment.domain.repository;
+package com.example.assignment.common.respotiroy;
 
-import com.example.assignment.domain.entity.User;
+import com.example.assignment.common.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
